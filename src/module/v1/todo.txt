@@ -45,9 +45,9 @@ do same for premium
 create 
 
 pickup
-User creates pickup request with selected recycle items, status changes to pending
-Admin sees pending requests in dashboard
-Admin accepts request and assign recycler, status changes to accepted
+User creates pickup request with selected recycle items, status changes to pending (done)
+Admin sees pending requests in dashboard (one)
+Admin accepts request and assign recycler, status changes to accepted (done)
 After physical pickup, admin marks as completed, 
 System moves items to history and gives rewards, status changes to completed
 Both user and admin can track status throughout process
