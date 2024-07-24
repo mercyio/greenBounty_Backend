@@ -1,4 +1,11 @@
-import { Body, Controller, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ResponseMessage } from 'src/common/decorators/response.decorator';
 import { AssignRecyclerDto } from '../dto/pickup.dto';
 import { AdminPickupService } from '../services/admin-pickup.service';
@@ -16,12 +23,17 @@ import { RolesGuard } from '../../auth/guards/role.guard';
 export class AdminPickupController {
   constructor(private adminPickupService: AdminPickupService) {}
 
-  @Post()
+  @Patch()
   @ResponseMessage(RESPONSE_CONSTANT.PICKUP.ASSIGN_RECYCLER_SUCCESS)
   async assignRecycler(
     @Query() { _id }: IDQueryDto,
     @Body() payload: AssignRecyclerDto,
   ) {
     return await this.adminPickupService.assignRecycler(_id, payload);
+  }
+
+  @Post()
+  async assignRecyclingPoint(@Query() { _id }: IDQueryDto) {
+    return await this.adminPickupService.assignRecyclingPoint(_id);
   }
 }

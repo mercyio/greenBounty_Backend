@@ -39,6 +39,9 @@ export class Pickup {
   @Prop({ default: false })
   isRewarded: boolean;
 
+  @Prop({ default: false })
+  isDeleted: boolean;
+
   @Prop()
   createdAt: Date;
 

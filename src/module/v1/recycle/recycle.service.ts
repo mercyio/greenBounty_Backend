@@ -17,12 +17,18 @@ import { PaginationDto } from '../repository/dto/repository.dto';
 import { RepositoryService } from '../repository/repository.service';
 import { BaseRepositoryService } from '../repository/base.service';
 import { RecycleItemDto } from './dto/recycle.dto';
+import {
+  RecycleHistory,
+  RecycleHistoryDocument,
+} from './schema/recycle-hystory.schema';
 
 @Injectable()
 export class RecycleItemService extends BaseRepositoryService<RecycleDocument> {
   constructor(
     @InjectModel(Recycle.name)
     private recycleModel: Model<RecycleDocument>,
+    @InjectModel(RecycleHistory.name)
+    private recycleHistoryModel: Model<RecycleHistoryDocument>,
     private basketService: BasketService,
     private repositoryService: RepositoryService,
   ) {
@@ -117,5 +123,13 @@ export class RecycleItemService extends BaseRepositoryService<RecycleDocument> {
       .lean();
 
     return itemIds.map((item) => item._id);
+  }
+
+  async createRecycleHistory(userId: string) {
+    const history = await this.recycleHistoryModel.create({
+      user: userId,
+    });
+
+    return await history.populate([{ path: 'recycleItems' }]);
   }
 }

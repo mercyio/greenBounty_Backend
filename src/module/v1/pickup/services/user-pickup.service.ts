@@ -38,6 +38,11 @@ export class UserPickupService {
       user._id.toString(),
     );
 
+    await this.recycleItemService.softDelete(user._id.toString());
+    (
+      await this.recycleItemService.createRecycleHistory(user._id.toString())
+    ).populate('recycleItems');
+
     return await this.pickupModel.create({
       ...payload,
       user: user._id,
