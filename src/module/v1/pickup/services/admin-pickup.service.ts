@@ -9,12 +9,18 @@ import { RepositoryService } from '../../repository/repository.service';
 import { UserService } from '../../user/services/user.service';
 import { SettingsService } from '../../settings/settings.service';
 import { BasketTypeEnum } from 'src/common/enums/basket.enum';
+import {
+  PickupHistory,
+  PickupHistoryDocument,
+} from '../schema/pickup-hystory.schema';
 
 @Injectable()
 export class AdminPickupService {
   constructor(
     @InjectModel(Pickup.name)
     private pickupModel: Model<PickupDocument>,
+    @InjectModel(PickupHistory.name)
+    private pickupHistoryModel: Model<PickupHistoryDocument>,
     private repositoryService: RepositoryService,
     private userService: UserService,
     private settingService: SettingsService,
@@ -72,7 +78,7 @@ export class AdminPickupService {
       this.userService.updateUserById(pickup.user._id.toString(), {
         $inc: { wallet: points },
       }),
-      this.createPickupHistory(pickup.user._id.toString(), pickupId),
+      await this.createPickupHistory(pickup.user._id.toString(), pickupId),
     ]);
 
     return result;
@@ -101,9 +107,19 @@ export class AdminPickupService {
   }
 
   async createPickupHistory(userId: string, pickupId: string) {
-    return await this.pickupModel.create({
+    const pickup = await this.findPickupById(pickupId);
+    console.log('pickup', pickup);
+
+    await this.pickupModel.findByIdAndUpdate(pickup._id.toString(), {
+      isDeleted: true,
+    });
+
+    return await this.pickupHistoryModel.create({
+      pickup: pickup._id,
+      items: pickup.recycleItems,
+      pickupDate: pickup.pickupDate,
+      pickupAddress: pickup.pickupAddress,
       user: userId,
-      pickupId,
     });
   }
 }
