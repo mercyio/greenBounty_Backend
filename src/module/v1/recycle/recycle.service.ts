@@ -151,4 +151,15 @@ export class RecycleItemService extends BaseRepositoryService<RecycleDocument> {
       user: userId,
     });
   }
+
+  async retrieveUserRecycleItemsHistory(
+    user: UserDocument,
+    query?: PaginationDto,
+  ) {
+    return await this.repositoryService.paginate({
+      model: this.recycleHistoryModel,
+      query,
+      options: { user: user._id },
+    });
+  }
 }
