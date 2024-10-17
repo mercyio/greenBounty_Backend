@@ -106,16 +106,4 @@ export class UserService {
       isLoggedOut: false,
     });
   }
-
-  async liveSession(uid: string) {
-    await this.updateUserById(uid, { isCameraOn: true });
-
-    const channelName = `live_session_${uid}_${Date.now()}`;
-
-    const token = await this.agoraService.generateToken(channelName, uid);
-    return {
-      uid,
-      token,
-    };
-  }
 }

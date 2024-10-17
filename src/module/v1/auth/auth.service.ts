@@ -63,7 +63,6 @@ export class AuthService {
 
     await this.userService.updateUserByEmail(email, {
       isLoggedOut: false,
-      // isCameraOn: true,
     });
     const token = this.jwtService.sign({ _id: user._id });
     delete user['_doc'].password;
