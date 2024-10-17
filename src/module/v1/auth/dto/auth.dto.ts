@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsString } from 'class-validator';
 import { CreateUserDto } from '../../user/dto/user.dto';
 
 export class LoginDto {
@@ -15,7 +15,9 @@ export class VerifyEmailDto {
 }
 
 export class SuperAdminSignUpDto extends CreateUserDto {
+  @IsEmail()
+  email: string;
+
   @IsString()
-  @IsNotEmpty()
-  secret: string;
+  password: string;
 }

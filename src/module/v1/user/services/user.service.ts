@@ -9,13 +9,11 @@ import { Model } from 'mongoose';
 import { CreateUserDto, GoogleAuthDto } from '../dto/user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { BaseHelper } from '../../../../common/utils/helper.util';
-import { AgoraService } from 'src/common/utils/third_party_services/agora.service';
 import { UserRoleEnum } from 'src/common/enums/user.enum';
 
 @Injectable()
 export class UserService {
   constructor(
-    private agoraService: AgoraService,
     @InjectModel(User.name)
     private userModel: Model<UserDocument>,
   ) {}

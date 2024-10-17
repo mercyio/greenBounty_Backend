@@ -26,17 +26,25 @@ export class AuthService {
   }
 
   async superAdminSignUp(payload: SuperAdminSignUpDto) {
-    const { secret, ...userPayload } = payload;
+    const { email, password, ...userPayload } = payload;
 
     // TODO : IMPLEMENT ENCRYPTION AND DECRYPTION FOR SECRET KEY
-    if (secret !== ENVIRONMENT.APP.SU_SS_KEY) {
+    if (
+      email !== ENVIRONMENT.ADMIN.EMAIL &&
+      password !== ENVIRONMENT.ADMIN.PASSWORD
+    ) {
       throw new BadRequestException('Invalid Secret Key');
     }
 
-    return await this.register(
+    const admin = await this.register(
       userPayload as CreateUserDto,
       UserRoleEnum.SUPER_ADMIN,
     );
+
+    return await this.userService.updateUserByEmail(email, {
+      emailVerified: true,
+      admin,
+    });
   }
 
   async login(payload: LoginDto) {
