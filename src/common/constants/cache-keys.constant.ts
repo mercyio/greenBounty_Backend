@@ -1,0 +1,4 @@
+export const CACHE_KEYS = {
+  SETTINGS: 'SETTINGS',
+  ACTIVE_USERS: 'ACTIVE_USERS',
+};

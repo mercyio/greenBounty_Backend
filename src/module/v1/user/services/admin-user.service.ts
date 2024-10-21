@@ -15,28 +15,27 @@ export class AdminUserService {
   ) {}
 
   async getUserDetails(query: GetUserPublicDto) {
-    const { firstname, userId, email } = query;
+    const { username, userId, email } = query;
 
-    if (!firstname && !userId && !email) {
+    if (!username && !userId && !email) {
       throw new BadRequestException('Invalid query');
     }
 
     const user = await this.userModel.findOne({
-      $or: [{ firstname }, { _id: userId }, { email }],
+      $or: [{ username }, { _id: userId }, { email }],
     });
 
     return user;
   }
 
   async getAllUsers(query: AdminGetAllUsersDto) {
-    const { deactivated, company, ...paginationQuery } = query;
+    const { isDeleted, ...paginationQuery } = query;
 
     return await this.repositoryService.paginate<UserDocument>({
       model: this.userModel,
       query: paginationQuery,
       options: {
-        ...(deactivated && { deactivated }),
-        ...(company && { company }),
+        ...(isDeleted && { isDeleted }),
       },
     });
   }

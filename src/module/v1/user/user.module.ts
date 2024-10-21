@@ -6,10 +6,12 @@ import { User, UserSchema } from './schemas/user.schema';
 import { RepositoryModule } from '../repository/repository.module';
 import { AdminUserController } from './controllers/admin-user.controller';
 import { AdminUserService } from './services/admin-user.service';
+import { SettingsModule } from '../settings/settings.module';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     RepositoryModule,
+    SettingsModule,
   ],
   controllers: [UserController, AdminUserController],
   providers: [UserService, AdminUserService],
