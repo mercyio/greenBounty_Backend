@@ -11,10 +11,7 @@ import { PaginationDto } from '../../repository/dto/repository.dto';
 
 export class CreateUserDto {
   @IsString()
-  firstname: string;
-
-  @IsString()
-  lastname: string;
+  username: string;
 
   @IsEmail()
   email: string;
@@ -28,6 +25,10 @@ export class CreateUserDto {
   @MinLength(4)
   @MaxLength(20)
   confirmPassword: string;
+
+  @IsString()
+  @IsOptional()
+  referralCode?: string;
 }
 
 export class GoogleAuthDto {
@@ -38,7 +39,7 @@ export class GoogleAuthDto {
 export class GetUserPublicDto {
   @IsOptional()
   @IsString()
-  firstname: string;
+  username: string;
 
   @IsOptional()
   @IsString()
@@ -53,15 +54,5 @@ export class GetUserPublicDto {
 export class AdminGetAllUsersDto extends PaginationDto {
   @IsOptional()
   @IsBooleanString()
-  deactivated: boolean;
-
-  @IsOptional()
-  @IsString()
-  company: boolean;
-}
-
-export class AdminGetAllWorkspaceUsers extends PaginationDto {
-  @IsOptional()
-  @IsString()
-  workspace: string;
+  isDeleted: boolean;
 }

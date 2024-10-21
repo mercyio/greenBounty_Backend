@@ -2,7 +2,13 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto, GoogleAuthDto } from '../user/dto/user.dto';
 import { ResponseMessage } from '../../../common/decorators/response.decorator';
-import { LoginDto, SuperAdminSignUpDto, VerifyEmailDto } from './dto/auth.dto';
+import {
+  ForgotPasswordDto,
+  LoginDto,
+  RequestVerifyEmailOtpDto,
+  ResetPasswordDto,
+  VerifyEmailDto,
+} from './dto/auth.dto';
 import { Public } from '../../../common/decorators/public.decorator';
 import { RESPONSE_CONSTANT } from '../../../common/constants/response.constant';
 
@@ -17,12 +23,12 @@ export class AuthController {
     return await this.authService.register(payload);
   }
 
-  @Public()
-  @Post('super-admin/signup')
-  @ResponseMessage(RESPONSE_CONSTANT.AUTH.REGISTER_SUCCESS)
-  async superAdminSignUp(@Body() payload: SuperAdminSignUpDto) {
-    return await this.authService.superAdminSignUp(payload);
-  }
+  // @Public()
+  // @Post('super-admin/signup')
+  // @ResponseMessage(RESPONSE_CONSTANT.AUTH.REGISTER_SUCCESS)
+  // async superAdminSignUp(@Body() payload: SuperAdminSignUpDto) {
+  //   return await this.authService.superAdminSignUp(payload);
+  // }
 
   @Public()
   @Post('login')
@@ -36,6 +42,26 @@ export class AuthController {
   @ResponseMessage(RESPONSE_CONSTANT.AUTH.EMAIL_VERIFICATION_SUCCESS)
   async verifyEmail(@Body() payload: VerifyEmailDto) {
     return await this.authService.verifyEmail(payload);
+  }
+
+  @Public()
+  @Post('verify-email/otp')
+  async sendVerificationEmail(@Body() payload: RequestVerifyEmailOtpDto) {
+    return await this.authService.sendVerificationMail(payload);
+  }
+
+  @Public()
+  @Post('forgot-password')
+  @ResponseMessage(RESPONSE_CONSTANT.AUTH.PASSWORD_RESET_EMAIL_SUCCESS)
+  async sendPasswordResetEmail(@Body() payload: ForgotPasswordDto) {
+    return await this.authService.sendPasswordResetEmail(payload);
+  }
+
+  @Public()
+  @Post('forgot-password/update')
+  @ResponseMessage(RESPONSE_CONSTANT.AUTH.PASSWORD_RESET_SUCCESS)
+  async resetPassword(@Body() payload: ResetPasswordDto) {
+    return await this.authService.resetPassword(payload);
   }
 
   @Public()

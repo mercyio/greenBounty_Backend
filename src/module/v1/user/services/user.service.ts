@@ -5,29 +5,42 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { User, UserDocument } from '../schemas/user.schema';
-import { Model } from 'mongoose';
+import { ClientSession, Model } from 'mongoose';
 import { CreateUserDto, GoogleAuthDto } from '../dto/user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { BaseHelper } from '../../../../common/utils/helper.util';
-import { AgoraService } from 'src/common/utils/third_party_services/agora.service';
 import { UserRoleEnum } from 'src/common/enums/user.enum';
+import { RepositoryService } from '../../repository/repository.service';
+import { SettingsService } from '../../settings/settings.service';
 
 @Injectable()
 export class UserService {
   constructor(
-    private agoraService: AgoraService,
     @InjectModel(User.name)
     private userModel: Model<UserDocument>,
+    private repositoryService: RepositoryService,
+    private settingService: SettingsService,
   ) {}
 
   async createUser(
     payload: CreateUserDto,
     role?: UserRoleEnum,
-    createdByAdmin?: boolean,
   ): Promise<UserDocument> {
-    const { password, confirmPassword } = payload;
-
     try {
+      const { referralCode, password, confirmPassword } = payload;
+      delete payload.referralCode; // delete the referral code to prevent persisting this as the new user referral code
+
+      let referralUserId: string | undefined;
+      if (referralCode) {
+        const referralUser = await this.userModel.findOne({ referralCode });
+
+        if (!referralUser) {
+          throw new BadRequestException('Referral code is invalid');
+        }
+
+        referralUserId = referralUser._id.toString();
+      }
+
       // Validate the password
       BaseHelper.validatePassword(password);
 
@@ -43,12 +56,21 @@ export class UserService {
         ...payload,
         password: hashedPassword,
         ...(role ? { role } : { role: UserRoleEnum.USER }),
-        ...(createdByAdmin && {
-          accountGenerated: true,
-          emailVerified: true,
-        }),
+        referredBy: referralUserId,
       });
 
+      // update referral user referral count
+      // TODO: award referral point
+      if (referralUserId) {
+        await this.userModel.updateOne(
+          { _id: referralUserId },
+          {
+            $inc: {
+              totalReferrals: 1,
+            },
+          },
+        );
+      }
       delete result['_doc'].password;
       return result;
     } catch (e) {
@@ -63,6 +85,13 @@ export class UserService {
       }
     }
   }
+
+  // async createAdminUser(email: string, password: string) {
+  //   return await this.userModel.create(
+  //     (email = ENVIRONMENT.ADMIN.EMAIL),
+  //     (password = ENVIRONMENT.ADMIN.PASSWORD),
+  //   );
+  // }
 
   async getUserByEmailIncludePassword(email: string): Promise<UserDocument> {
     return this.userModel.findOne({ email }).select('+password');
@@ -107,15 +136,31 @@ export class UserService {
     });
   }
 
-  async liveSession(uid: string) {
-    await this.updateUserById(uid, { isCameraOn: true });
-
-    const channelName = `live_session_${uid}_${Date.now()}`;
-
-    const token = await this.agoraService.generateToken(channelName, uid);
-    return {
-      uid,
-      token,
-    };
+  async updateUserPoint(
+    user: UserDocument,
+    point: number,
+    type: 'inc' | 'dec',
+    session?: ClientSession,
+  ) {
+    await this.userModel.updateOne(
+      {
+        _id: user._id,
+      },
+      {
+        $inc: {
+          wallet: type === 'inc' ? point : -point,
+        },
+      },
+      {
+        session,
+      },
+    );
   }
+
+  // async showUserReferrals(user: UserDocument, query: PaginationDto) {
+  //   return await this.repositoryService.paginate(this.userModel, query, {
+  //     _id: { $ne: user._id },
+  //     referredBy: user._id,
+  //   });
+  // }
 }

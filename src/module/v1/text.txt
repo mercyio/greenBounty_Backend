@@ -1,4 +1,0 @@
-1. activate and deactivate a workspace or admin by super admin
-activate or deactivate user in a workspace by admin and super admin, deactivate user without workspace will be done by super admin
-get workspace by admin
-get all workspace by super admin

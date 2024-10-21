@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { PaginationDto } from './dto/repository.dto';
 import {
   IPaginationPayload,
   IPaginationResponse,

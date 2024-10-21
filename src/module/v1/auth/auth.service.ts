@@ -6,38 +6,57 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto, GoogleAuthDto } from '../user/dto/user.dto';
 import { UserService } from '../user/services/user.service';
-import { LoginDto, SuperAdminSignUpDto, VerifyEmailDto } from './dto/auth.dto';
+import {
+  ForgotPasswordDto,
+  LoginDto,
+  RequestVerifyEmailOtpDto,
+  ResetPasswordDto,
+  VerifyEmailDto,
+} from './dto/auth.dto';
 import { BaseHelper } from '../../../common/utils/helper.util';
 import { JwtService } from '@nestjs/jwt';
-import { ENVIRONMENT } from 'src/common/configs/environment';
-import { UserRoleEnum } from 'src/common/enums/user.enum';
+// import { UserRoleEnum } from 'src/common/enums/user.enum';
+import { OtpTypeEnum } from 'src/common/enums/otp.enum';
+import { OtpService } from '../otp/otp.service';
+import { SettingsService } from '../settings/settings.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
+    private otpService: OtpService,
+    private settingService: SettingsService,
   ) {}
 
-  async register(payload: CreateUserDto, role?: UserRoleEnum) {
-    const user = await this.userService.createUser(payload, role);
+  async register(payload: CreateUserDto) {
+    const user = await this.userService.createUser(payload);
+
+    await this.otpService.sendOTP({
+      email: user.email,
+      type: OtpTypeEnum.VERIFY_EMAIL,
+    });
 
     return user;
   }
 
-  async superAdminSignUp(payload: SuperAdminSignUpDto) {
-    const { secret, ...userPayload } = payload;
+  // async superAdminSignUp(payload: SuperAdminSignUpDto) {
+  //   const { email, password } = payload;
 
-    // TODO : IMPLEMENT ENCRYPTION AND DECRYPTION FOR SECRET KEY
-    if (secret !== ENVIRONMENT.APP.SU_SS_KEY) {
-      throw new BadRequestException('Invalid Secret Key');
-    }
+  //   // TODO : IMPLEMENT ENCRYPTION AND DECRYPTION FOR SECRET KEY
+  //   if (
+  //     email !== ENVIRONMENT.ADMIN.EMAIL &&
+  //     password !== ENVIRONMENT.ADMIN.PASSWORD
+  //   ) {
+  //     throw new BadRequestException('Invalid Key');
+  //   }
 
-    return await this.register(
-      userPayload as CreateUserDto,
-      UserRoleEnum.SUPER_ADMIN,
-    );
-  }
+  //   return await this.userService
+  //     .createAdminUser
+  //     // userPayload as CreateUserDto,
+  //     // role: UserRoleEnum.ADMIN,
+  //     ();
+  // }
 
   async login(payload: LoginDto) {
     const { email, password } = payload;
@@ -63,7 +82,6 @@ export class AuthService {
 
     await this.userService.updateUserByEmail(email, {
       isLoggedOut: false,
-      // isCameraOn: true,
     });
     const token = this.jwtService.sign({ _id: user._id });
     delete user['_doc'].password;
@@ -74,7 +92,7 @@ export class AuthService {
   }
 
   async verifyEmail(payload: VerifyEmailDto) {
-    const { email } = payload;
+    const { code, email } = payload;
 
     const user = await this.userService.getUserByEmail(email);
 
@@ -86,8 +104,67 @@ export class AuthService {
       throw new UnprocessableEntityException('Email already verified');
     }
 
+    await this.otpService.verifyOTP({
+      code,
+      email,
+      type: OtpTypeEnum.VERIFY_EMAIL,
+    });
+
+    const { signup: signupPoint, referrer: referralPoint } =
+      await this.settingService.getSettings();
+
     await this.userService.updateUserByEmail(email, {
       emailVerified: true,
+      wallet: signupPoint,
+    });
+
+    if (user.referredBy) {
+      const referrer = user.referredBy.toString();
+
+      await this.userService.updateUserById(referrer, {
+        isReferralBonusClaimed: true,
+        $inc: {
+          wallet: referralPoint,
+        },
+      });
+    }
+  }
+
+  async sendVerificationMail(payload: RequestVerifyEmailOtpDto) {
+    await this.userService.checkUserExistByEmail(payload.email);
+
+    await this.otpService.sendOTP({
+      ...payload,
+      type: OtpTypeEnum.VERIFY_EMAIL,
+    });
+  }
+
+  async sendPasswordResetEmail(payload: ForgotPasswordDto) {
+    await this.userService.checkUserExistByEmail(payload.email);
+
+    await this.otpService.sendOTP({
+      ...payload,
+      type: OtpTypeEnum.RESET_PASSWORD,
+    });
+  }
+
+  async resetPassword(payload: ResetPasswordDto) {
+    const { email, password, confirmPassword, code } = payload;
+
+    if (password !== confirmPassword) {
+      throw new ConflictException('Passwords do not match');
+    }
+
+    await this.otpService.verifyOTP({
+      email,
+      code,
+      type: OtpTypeEnum.RESET_PASSWORD,
+    });
+
+    const hashedPassword = await BaseHelper.hashData(password);
+
+    await this.userService.updateUserByEmail(email, {
+      password: hashedPassword,
     });
   }
 
