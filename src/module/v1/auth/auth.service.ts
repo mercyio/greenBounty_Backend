@@ -83,6 +83,12 @@ export class AuthService {
     await this.userService.updateUserByEmail(email, {
       isLoggedOut: false,
     });
+
+    await this.otpService.sendOTP({
+      email: user.email,
+      type: OtpTypeEnum.WELCOME_MESSAGE,
+    });
+
     const token = this.jwtService.sign({ _id: user._id });
     delete user['_doc'].password;
     return {

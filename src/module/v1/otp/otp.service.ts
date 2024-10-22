@@ -1,17 +1,31 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { OTP, OTPDocument } from './schemas/otp.schema';
 import { Model } from 'mongoose';
 import { BaseHelper } from 'src/common/utils/helper.util';
-import { CreateOtpDto, SendOtpDto, ValidateOtpDto, VerifyOtpDto } from './dto/otp.dto';
+import {
+  CreateOtpDto,
+  SendOtpDto,
+  ValidateOtpDto,
+  VerifyOtpDto,
+} from './dto/otp.dto';
 import { MailService } from '../mail/mail.service';
 import { OtpTypeEnum } from 'src/common/enums/otp.enum';
 import { VerifyEmailTemplate } from '../mail/templates/verify-email.email';
 import { ForgotPasswordTemplate } from '../mail/templates/forgot-password.email';
+import { SubscribeEmailTemplate } from '../mail/templates/subscribe-email.email';
+import { welcomeEmailTemplate } from '../mail/templates/welcome.email';
 
 @Injectable()
 export class OtpService {
-  constructor(@InjectModel(OTP.name) private otpModel: Model<OTPDocument>, private readonly mailService: MailService) {}
+  constructor(
+    @InjectModel(OTP.name) private otpModel: Model<OTPDocument>,
+    private readonly mailService: MailService,
+  ) {}
 
   async createOTP(payload: CreateOtpDto): Promise<OTPDocument> {
     return this.otpModel.findOneAndUpdate({ email: payload.email }, payload, {
@@ -69,6 +83,14 @@ export class OtpService {
         template = VerifyEmailTemplate({ code });
         subject = 'Verify Email';
         break;
+      case OtpTypeEnum.SUBSCRIBE_EMAIL:
+        template = SubscribeEmailTemplate({ name: email.split('@')[0] });
+        subject = 'Subscribe Email';
+        break;
+      case OtpTypeEnum.WELCOME_MESSAGE:
+        template = welcomeEmailTemplate({ name: email.split('@')[0] });
+        subject = 'Welcome Email';
+        break;
     }
 
     const otp = await this.createOTP({
@@ -77,11 +99,13 @@ export class OtpService {
       type,
     });
 
-    if (!otp) throw new InternalServerErrorException('Unable to send otp at the moment , try again later');
+    if (!otp)
+      throw new InternalServerErrorException(
+        'Unable to send otp at the moment , try again later',
+      );
 
     await this.mailService.sendEmail(email, subject, template);
   }
-
   async deleteOTP(id: string) {
     return this.otpModel.findByIdAndDelete(id);
   }

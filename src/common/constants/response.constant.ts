@@ -14,17 +14,11 @@ export const RESPONSE_CONSTANT = {
     GET_CURRENT_USER_SUCCESS: 'Current User Retrieved Successfully',
     UPDATE_USER_PROFILE_SUCCESS: 'Profile Successfully Updated',
   },
-  INTEREST: {
-    CREATED_SUCCESS: 'interest created successfully',
-    UPDATED_SUCCESS: 'interest updated successfully',
-    GET_ALL_INTEREST__SUCCESS: 'available interest in database',
-  },
-  CAMERA: {
-    CAMERA_ON: 'Camera turned on successfully',
-  },
   WORKSPACE: {
     WORKSPACE_CREATED_SUCCESS: 'Workspace created successfully',
     WORKSPACE_UPDATED_SUCCESS: 'Workspace updated successfully',
     WORKSPACE_DELETED_SUCCESS: 'Workspace deleted successfully',
   },
+  SUBSCRIBE_EMAIL_SUCCESS: 'Email subscribed successfully',
+  UNSUBSCRIBE_EMAIL_SUCCESS: 'Email unsubscribed successfully',
 };

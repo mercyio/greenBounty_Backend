@@ -6,7 +6,7 @@ import { RepositoryModule } from './module/v1/repository/repository.module';
 import { MailModule } from './module/v1/mail/mail.module';
 import { OtpModule } from './module/v1/otp/otp.module';
 import { SettingsModule } from './module/v1/settings/settings.module';
-// import { GoogleMapModule } from './module/v1/map/map.module';
+import { WaitListModule } from './module/v1/waitList/waitList.module';
 
 @Module({
   imports: [
@@ -17,7 +17,7 @@ import { SettingsModule } from './module/v1/settings/settings.module';
     MailModule,
     RepositoryModule,
     SettingsModule,
-    // GoogleMapModule,
+    WaitListModule,
   ],
   controllers: [],
   providers: [],
