@@ -1,6 +1,6 @@
 import { IWelcomeEmailTemplate } from '../../../../common/interfaces/email-templates.interface';
 
-export function welcomeEmailTemplate(data: IWelcomeEmailTemplate) {
+export function SubscribeEmailTemplate(data: IWelcomeEmailTemplate) {
   return `
     <!DOCTYPE html>
 <html>
