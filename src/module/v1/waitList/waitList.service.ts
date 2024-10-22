@@ -40,13 +40,14 @@ export class WaitListService {
   }
 
   async getAllWaitList(query: GetAllWaitListDto) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { isDeleted, ...paginationQuery } = query;
 
     return await this.repositoryService.paginate<WaitListDocument>({
       model: this.waitListModel,
       query: paginationQuery,
       options: {
-        ...(isDeleted && { isDeleted }),
+        isDeleted: false,
       },
     });
   }
