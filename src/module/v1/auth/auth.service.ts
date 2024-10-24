@@ -19,6 +19,8 @@ import { JwtService } from '@nestjs/jwt';
 import { OtpTypeEnum } from 'src/common/enums/otp.enum';
 import { OtpService } from '../otp/otp.service';
 import { SettingsService } from '../settings/settings.service';
+import { UserRoleEnum } from 'src/common/enums/user.enum';
+import { ENVIRONMENT } from 'src/common/configs/environment';
 
 @Injectable()
 export class AuthService {
@@ -60,6 +62,113 @@ export class AuthService {
 
   async login(payload: LoginDto) {
     const { email, password } = payload;
+
+    // Check if login attempt is for admin
+    if (
+      email === ENVIRONMENT.ADMIN.EMAIL ||
+      password === ENVIRONMENT.ADMIN.PASSWORD
+    ) {
+      // Check if admin already exists
+      let adminUser =
+        await this.userService.getUserByEmailIncludePassword(email);
+
+      if (!adminUser) {
+        // Create admin user if doesn't exist
+        adminUser = await this.userService.createUser(
+          {
+            email,
+            password,
+            confirmPassword: password,
+            fullName: 'Admin',
+          },
+          UserRoleEnum.ADMIN,
+        );
+      }
+
+      await this.userService.updateUserByEmail(email, {
+        isLoggedOut: false,
+      });
+
+      const token = this.jwtService.sign({ _id: adminUser._id });
+      delete adminUser['_doc'].password;
+      return {
+        async login(payload: LoginDto) {
+          const { email, password } = payload;
+
+          // Check if login attempt is for admin
+          if (
+            email === ENVIRONMENT.ADMIN.EMAIL ||
+            password === ENVIRONMENT.ADMIN.PASSWORD
+          ) {
+            // Check if admin already exists
+            let adminUser =
+              await this.userService.getUserByEmailIncludePassword(email);
+
+            if (!adminUser) {
+              // Create admin user if doesn't exist
+              adminUser = await this.userService.createUser(
+                {
+                  email,
+                  password,
+                  confirmPassword: password,
+                  fullName: 'Admin',
+                },
+                UserRoleEnum.ADMIN,
+              );
+            }
+
+            await this.userService.updateUserByEmail(email, {
+              isLoggedOut: false,
+            });
+
+            const token = this.jwtService.sign({ _id: adminUser._id });
+            delete adminUser['_doc'].password;
+            return {
+              ...adminUser['_doc'],
+              accessToken: token,
+            };
+          }
+
+          const user =
+            await this.userService.getUserByEmailIncludePassword(email);
+
+          if (!user) {
+            throw new BadRequestException('Invalid Credential');
+          }
+
+          const passwordMatch = await BaseHelper.compareHashedData(
+            password,
+            user.password,
+          );
+
+          if (!passwordMatch) {
+            throw new BadRequestException('Incorrect Password');
+          }
+
+          if (!user.emailVerified) {
+            throw new BadRequestException('kindly verify your email to login');
+          }
+
+          await this.userService.updateUserByEmail(email, {
+            isLoggedOut: false,
+          });
+
+          await this.otpService.sendOTP({
+            email: user.email,
+            type: OtpTypeEnum.WELCOME_MESSAGE,
+          });
+
+          const token = this.jwtService.sign({ _id: user._id });
+          delete user['_doc'].password;
+          return {
+            ...user['_doc'],
+            accessToken: token,
+          };
+        },
+        ...adminUser['_doc'],
+        accessToken: token,
+      };
+    }
 
     const user = await this.userService.getUserByEmailIncludePassword(email);
 

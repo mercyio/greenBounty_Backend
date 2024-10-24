@@ -1,11 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+@Schema({
+  timestamps: true,
+})
+export class WaitList extends Document {
+  @Prop({ required: true })
+  fullName: string;
 
-export type WaitListDocument = WaitList & Document;
-
-@Schema({ timestamps: true })
-export class WaitList {
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true })
   email: string;
 
   @Prop({ default: false })

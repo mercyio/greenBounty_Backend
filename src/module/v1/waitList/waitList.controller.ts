@@ -1,30 +1,29 @@
-import { Controller, Post, Get, Body, Query, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { WaitListService } from './waitList.service';
-import { AddToWaitListDto, GetAllWaitListDto } from './dto/waitList.dto';
-import { Public } from 'src/common/decorators/public.decorator';
-import { RESPONSE_CONSTANT } from 'src/common/constants/response.constant';
-import { ResponseMessage } from 'src/common/decorators/response.decorator';
+import { Public } from '../../../common/decorators/public.decorator';
+import { ResponseMessage } from '../../../common/decorators/response.decorator';
+import { RESPONSE_CONSTANT } from '../../../common/constants/response.constant';
+import { PaginationDto } from '../repository/dto/repository.dto';
+import { Roles } from '../../../common/decorators/role.decorator';
+import { UserRoleEnum } from '../../../common/enums/user.enum';
+import { RolesGuard } from '../auth/guards/role.guard';
+import { JoinWaitListDto } from './dto/waitList.dto';
 
 @Controller('waitList')
 export class WaitListController {
   constructor(private readonly waitListService: WaitListService) {}
 
   @Public()
-  @ResponseMessage(RESPONSE_CONSTANT.SUBSCRIBE_EMAIL_SUCCESS)
-  @Post('subscribe')
-  async addToWaitList(@Body() payload: AddToWaitListDto) {
-    return this.waitListService.addToWaitList(payload);
+  @ResponseMessage(RESPONSE_CONSTANT.WAITLIST.JOIN_WAITLIST_SUCCESS)
+  @Post()
+  joinWaitList(@Body() payload: JoinWaitListDto) {
+    return this.waitListService.joinWaitList(payload);
   }
 
-  @Get('/')
-  async getWaitList(@Query() query: GetAllWaitListDto) {
-    return this.waitListService.getAllWaitList(query);
-  }
-
-  @Public()
-  @ResponseMessage(RESPONSE_CONSTANT.UNSUBSCRIBE_EMAIL_SUCCESS)
-  @Patch('unsubscribe')
-  async removeFromWaitList(@Body('email') email: string): Promise<any> {
-    return this.waitListService.removeFromWaitList(email);
+  @UseGuards(RolesGuard)
+  @Roles(UserRoleEnum.ADMIN, UserRoleEnum.SUPER_ADMIN)
+  @Get()
+  allEntries(@Query() query: PaginationDto) {
+    return this.waitListService.allEntries(query);
   }
 }

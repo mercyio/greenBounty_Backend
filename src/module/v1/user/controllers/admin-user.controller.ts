@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { UserRoleEnum } from '../../../../common/enums/user.enum';
 import { Roles } from '../../../../common/decorators/role.decorator';
 import { AdminUserService } from '../services/admin-user.service';
@@ -7,6 +7,8 @@ import { AdminGetAllUsersDto, GetUserPublicDto } from '../dto/user.dto';
 import { NoCache } from 'src/common/decorators/cache.decorator';
 import { RESPONSE_CONSTANT } from 'src/common/constants/response.constant';
 import { ResponseMessage } from 'src/common/decorators/response.decorator';
+import { Public } from 'src/common/decorators/public.decorator';
+import { CreateAdminDto } from '../dto/user-admin.dto';
 
 @NoCache()
 @UseGuards(RolesGuard)
@@ -24,5 +26,12 @@ export class AdminUserController {
   @Get('all-users')
   async getAllUsers(@Query() query: AdminGetAllUsersDto) {
     return await this.adminUserService.getAllUsers(query);
+  }
+
+  @Public()
+  @Post()
+  @ResponseMessage(RESPONSE_CONSTANT.AUTH.REGISTER_SUCCESS)
+  async createAdmin(@Body() payload: CreateAdminDto) {
+    return await this.adminUserService.createAdminUser(payload);
   }
 }
