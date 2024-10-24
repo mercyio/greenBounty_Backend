@@ -111,7 +111,8 @@ export class AuthService {
                   email,
                   password,
                   confirmPassword: password,
-                  fullName: 'Admin',
+
+                  fullName: ENVIRONMENT.ADMIN.NAME,
                 },
                 UserRoleEnum.ADMIN,
               );
