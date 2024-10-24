@@ -5,6 +5,9 @@ import { RepositoryService } from '../../repository/repository.service';
 import { GetUserPublicDto, AdminGetAllUsersDto } from '../dto/user.dto';
 import { User, UserDocument } from '../schemas/user.schema';
 import { UserService } from './user.service';
+import { ENVIRONMENT } from 'src/common/configs/environment';
+import { CreateAdminDto } from '../dto/user-admin.dto';
+import { UserRoleEnum } from 'src/common/enums/user.enum';
 
 @Injectable()
 export class AdminUserService {
@@ -14,15 +17,39 @@ export class AdminUserService {
     private userService: UserService,
   ) {}
 
-  async getUserDetails(query: GetUserPublicDto) {
-    const { username, userId, email } = query;
+  async createAdminUser(payload: CreateAdminDto) {
+    const { email, password, fullName } = payload;
 
-    if (!username && !userId && !email) {
+    if (
+      email !== ENVIRONMENT.ADMIN.EMAIL ||
+      password !== ENVIRONMENT.ADMIN.PASSWORD ||
+      fullName !== ENVIRONMENT.ADMIN.PASSWORD
+    ) {
+      throw new BadRequestException('Invalid admin credentials');
+    }
+
+    const user = await this.userService.createUser(
+      {
+        email,
+        password,
+        confirmPassword: password,
+        fullName,
+      },
+      UserRoleEnum.ADMIN,
+    );
+
+    return user;
+  }
+
+  async getUserDetails(query: GetUserPublicDto) {
+    const { fullName, userId, email } = query;
+
+    if (!fullName && !userId && !email) {
       throw new BadRequestException('Invalid query');
     }
 
     const user = await this.userModel.findOne({
-      $or: [{ username }, { _id: userId }, { email }],
+      $or: [{ fullName }, { _id: userId }, { email }],
     });
 
     return user;

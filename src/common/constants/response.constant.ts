@@ -19,6 +19,12 @@ export const RESPONSE_CONSTANT = {
     WORKSPACE_UPDATED_SUCCESS: 'Workspace updated successfully',
     WORKSPACE_DELETED_SUCCESS: 'Workspace deleted successfully',
   },
-  SUBSCRIBE_EMAIL_SUCCESS: 'Email subscribed successfully',
-  UNSUBSCRIBE_EMAIL_SUCCESS: 'Email unsubscribed successfully',
+  WAITLIST: {
+    JOIN_WAITLIST_SUCCESS: 'WaitList created successfully',
+  },
+  SETTINGS: {
+    SETTINGS_CREATED_SUCCESS: 'Settings created successfully',
+    SETTINGS_UPDATED_SUCCESS: 'Settings updated successfully',
+    SETTINGS_DELETED_SUCCESS: 'Settings deleted successfully',
+  },
 };

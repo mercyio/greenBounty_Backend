@@ -11,7 +11,7 @@ import { PaginationDto } from '../../repository/dto/repository.dto';
 
 export class CreateUserDto {
   @IsString()
-  username: string;
+  fullName: string;
 
   @IsEmail()
   email: string;
@@ -39,7 +39,7 @@ export class GoogleAuthDto {
 export class GetUserPublicDto {
   @IsOptional()
   @IsString()
-  username: string;
+  fullName: string;
 
   @IsOptional()
   @IsString()

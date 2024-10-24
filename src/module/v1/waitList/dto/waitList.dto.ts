@@ -1,13 +1,11 @@
-import { IsBoolean, IsEmail, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
-export class AddToWaitListDto {
+export class JoinWaitListDto {
+  @IsString()
+  @IsNotEmpty()
+  fullName: string;
+
   @IsEmail()
   @IsNotEmpty()
   email: string;
-}
-
-export class GetAllWaitListDto {
-  @IsBoolean()
-  @IsOptional()
-  isDeleted?: boolean;
 }

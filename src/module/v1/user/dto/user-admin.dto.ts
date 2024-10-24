@@ -1,4 +1,11 @@
-import { IsString, IsNotEmpty, IsEnum } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsEnum,
+  IsEmail,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { UserRoleEnum } from '../../../../common/enums/user.enum';
 
 export class AdminAssignRoleDto {
@@ -22,10 +29,18 @@ export class ActivateDeactivateAdminDto {
 
 export class CreateAdminDto {
   @IsString()
-  @IsNotEmpty()
+  fullName: string;
+
+  @IsEmail()
   email: string;
 
-  @IsEnum(UserRoleEnum)
-  @IsNotEmpty()
-  role: UserRoleEnum;
+  @IsString()
+  @MinLength(4)
+  @MaxLength(20)
+  password: string;
+
+  @IsString()
+  @MinLength(4)
+  @MaxLength(20)
+  confirmPassword: string;
 }
