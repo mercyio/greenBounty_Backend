@@ -41,7 +41,7 @@ export interface IEnvironment {
   ADMIN: {
     EMAIL: string;
     PASSWORD: string;
-    USERNAME: string;
+    NAME: string;
   };
 }
 
@@ -84,6 +84,6 @@ export const ENVIRONMENT: IEnvironment = {
   ADMIN: {
     EMAIL: process.env.ADMIN_EMAIL,
     PASSWORD: process.env.ADMIN_PASSWORD,
-    USERNAME: process.env.ADMIN_USERNAME,
+    NAME: process.env.ADMIN_NAME,
   },
 };
