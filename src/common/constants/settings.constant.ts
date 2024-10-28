@@ -8,9 +8,5 @@ export const SETTINGS: ISettings = {
   coin: {
     name: 'GreenBounty',
     symbol: 'GB',
-    likesToPoints: {
-      active: true,
-      amount: 2,
-    },
   },
 };

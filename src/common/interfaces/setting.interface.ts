@@ -6,9 +6,5 @@ export interface ISettings {
   coin: {
     name: string;
     symbol: string;
-    likesToPoints: {
-      active: boolean;
-      amount: number;
-    };
   };
 }
