@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { UserRoleEnum } from '../../../../common/enums/user.enum';
-import { UserBasketEnum } from 'src/common/enums/basket.enum';
+import { BasketTypeEnum } from 'src/common/enums/basket.enum';
 
 export type UserDocument = User & Document;
 
@@ -22,8 +22,8 @@ export class User {
   @Prop({ enum: UserRoleEnum, default: UserRoleEnum.USER })
   role: UserRoleEnum;
 
-  @Prop({ enum: UserBasketEnum, default: UserBasketEnum.STANDARD })
-  basket: UserBasketEnum;
+  @Prop({ enum: BasketTypeEnum, default: BasketTypeEnum.STANDARD })
+  basket: BasketTypeEnum;
 
   @Prop({ default: null, index: true })
   referralCode: string;

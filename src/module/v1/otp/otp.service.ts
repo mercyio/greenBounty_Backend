@@ -17,7 +17,7 @@ import { MailService } from '../mail/mail.service';
 import { OtpTypeEnum } from 'src/common/enums/otp.enum';
 import { VerifyEmailTemplate } from '../mail/templates/verify-email.email';
 import { ForgotPasswordTemplate } from '../mail/templates/forgot-password.email';
-import { SubscribeEmailTemplate } from '../mail/templates/subscribe-email.email';
+import { SubscribeToWaitListTemplate } from '../mail/templates/subscribe-waitList.email';
 import { welcomeEmailTemplate } from '../mail/templates/welcome.email';
 
 @Injectable()
@@ -83,9 +83,9 @@ export class OtpService {
         template = VerifyEmailTemplate({ code });
         subject = 'Verify Email';
         break;
-      case OtpTypeEnum.SUBSCRIBE_EMAIL:
-        template = SubscribeEmailTemplate({ name: email.split('@')[0] });
-        subject = 'Subscribe Email';
+      case OtpTypeEnum.SUBSCRIBE_TO_WAITLIST:
+        template = SubscribeToWaitListTemplate({ name: email.split('@')[0] });
+        subject = 'Subscribe To WaitList';
         break;
       case OtpTypeEnum.WELCOME_MESSAGE:
         template = welcomeEmailTemplate({ name: email.split('@')[0] });

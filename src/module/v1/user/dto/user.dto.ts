@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { PaginationDto } from '../../repository/dto/repository.dto';
-import { UserBasketEnum } from 'src/common/enums/basket.enum';
+import { BasketTypeEnum } from 'src/common/enums/basket.enum';
 
 export class CreateUserDto {
   @IsString()
@@ -56,6 +56,6 @@ export class AdminGetAllUsersDto extends PaginationDto {
 
 export class UpgradeBasketDto {
   @IsString()
-  @IsEnum(UserBasketEnum)
-  plan: UserBasketEnum;
+  @IsEnum(BasketTypeEnum)
+  plan: BasketTypeEnum;
 }

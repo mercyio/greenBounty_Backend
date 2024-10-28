@@ -127,7 +127,7 @@ export class AuthService {
     await this.otpService.verifyOTP({
       code,
       email,
-      type: OtpTypeEnum.VERIFY_EMAIL,
+      type: OtpTypeEnum.WELCOME_MESSAGE,
     });
 
     const { signup: signupPoint, referral: referralPoint } =
@@ -149,6 +149,7 @@ export class AuthService {
       });
     }
   }
+
   async sendVerificationMail(payload: RequestVerifyEmailOtpDto) {
     await this.userService.checkUserExistByEmail(payload.email);
 

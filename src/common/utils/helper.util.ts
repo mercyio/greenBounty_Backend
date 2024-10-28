@@ -97,7 +97,7 @@ export class BaseHelper {
     const formattedName = name.toLowerCase().replace(/\s+/g, '_');
     // Generate a random alphanumeric string of a specified length
     const uniqueId = Math.random().toString(36).substring(2, 8);
-    const referralCode = `greenBounty-user=${formattedName}${uniqueId}`;
+    const referralCode = `GreenBounty-user=${formattedName}${uniqueId}`;
     return referralCode;
   }
 }

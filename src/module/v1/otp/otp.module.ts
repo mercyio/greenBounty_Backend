@@ -6,7 +6,10 @@ import { OTP, OTPSchema } from './schemas/otp.schema';
 import { MailModule } from '../mail/mail.module';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: OTP.name, schema: OTPSchema }]), MailModule],
+  imports: [
+    MongooseModule.forFeature([{ name: OTP.name, schema: OTPSchema }]),
+    MailModule,
+  ],
   controllers: [OtpController],
   providers: [OtpService],
   exports: [OtpService],
