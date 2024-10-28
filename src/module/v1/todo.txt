@@ -2,3 +2,4 @@
 2. referral code (done) 
 3. referral free coin (done)
 4. basket (done)
+5. waitlist mail (done)
