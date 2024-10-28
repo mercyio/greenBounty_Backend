@@ -1,6 +1,7 @@
 import {
   IsBooleanString,
   IsEmail,
+  IsEnum,
   IsOptional,
   IsString,
   MaxLength,
@@ -8,23 +9,19 @@ import {
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { PaginationDto } from '../../repository/dto/repository.dto';
+import { UserBasketEnum } from 'src/common/enums/basket.enum';
 
 export class CreateUserDto {
   @IsString()
-  fullName: string;
+  name: string;
 
   @IsEmail()
   email: string;
 
   @IsString()
-  @MinLength(4)
-  @MaxLength(20)
+  @MinLength(2)
+  @MaxLength(30)
   password: string;
-
-  @IsString()
-  @MinLength(4)
-  @MaxLength(20)
-  confirmPassword: string;
 
   @IsString()
   @IsOptional()
@@ -39,7 +36,7 @@ export class GoogleAuthDto {
 export class GetUserPublicDto {
   @IsOptional()
   @IsString()
-  fullName: string;
+  name: string;
 
   @IsOptional()
   @IsString()
@@ -55,4 +52,10 @@ export class AdminGetAllUsersDto extends PaginationDto {
   @IsOptional()
   @IsBooleanString()
   isDeleted: boolean;
+}
+
+export class UpgradeBasketDto {
+  @IsString()
+  @IsEnum(UserBasketEnum)
+  plan: UserBasketEnum;
 }

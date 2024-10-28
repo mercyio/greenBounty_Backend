@@ -79,18 +79,25 @@ export class BaseHelper {
 
   static validatePassword(password: string): boolean {
     // Regular expression pattern for password validation
-    const passwordPattern =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d\W_])[a-zA-Z\d\W_]{3,20}$/;
+    const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d\W_]{3,20}$/;
 
     // Check if the password matches the pattern
     const isValid = passwordPattern.test(password);
 
     if (!isValid) {
       throw new BadRequestException(
-        'Invalid password format. Password must contain at least 1 lowercase letter, 1 uppercase letter, and 1 number or special character.',
+        'Invalid password format. Password must include at least one letter and one number.',
       );
     }
 
     return true;
+  }
+
+  static generateReferralCode(name: string): string {
+    const formattedName = name.toLowerCase().replace(/\s+/g, '_');
+    // Generate a random alphanumeric string of a specified length
+    const uniqueId = Math.random().toString(36).substring(2, 8);
+    const referralCode = `greenBounty-user=${formattedName}${uniqueId}`;
+    return referralCode;
   }
 }

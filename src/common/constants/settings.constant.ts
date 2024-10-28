@@ -6,8 +6,8 @@ export const SETTINGS: ISettings = {
     signup: 10,
   },
   coin: {
-    name: 'Macwin',
-    symbol: 'MAC',
+    name: 'GreenBounty',
+    symbol: 'GB',
     likesToPoints: {
       active: true,
       amount: 2,

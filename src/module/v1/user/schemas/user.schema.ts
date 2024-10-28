@@ -1,13 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { UserRoleEnum } from '../../../../common/enums/user.enum';
+import { UserBasketEnum } from 'src/common/enums/basket.enum';
 
 export type UserDocument = User & Document;
 
 @Schema({ timestamps: true })
 export class User {
   @Prop({ unique: false, index: true })
-  fullName?: string;
+  name?: string;
 
   @Prop({ unique: true, index: true, required: true })
   email: string;
@@ -20,6 +21,9 @@ export class User {
 
   @Prop({ enum: UserRoleEnum, default: UserRoleEnum.USER })
   role: UserRoleEnum;
+
+  @Prop({ enum: UserBasketEnum, default: UserBasketEnum.STANDARD })
+  basket: UserBasketEnum;
 
   @Prop({ default: null, index: true })
   referralCode: string;
@@ -34,7 +38,7 @@ export class User {
   isReferralBonusClaimed: boolean;
 
   @Prop({ default: 0 })
-  totalCoin: number;
+  wallet: number;
 
   @Prop({ default: false })
   isGoogleAuth: boolean;

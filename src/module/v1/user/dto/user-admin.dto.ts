@@ -29,18 +29,13 @@ export class ActivateDeactivateAdminDto {
 
 export class CreateAdminDto {
   @IsString()
-  fullName: string;
+  name: string;
 
   @IsEmail()
   email: string;
 
   @IsString()
-  @MinLength(4)
-  @MaxLength(20)
+  @MinLength(2)
+  @MaxLength(30)
   password: string;
-
-  @IsString()
-  @MinLength(4)
-  @MaxLength(20)
-  confirmPassword: string;
 }

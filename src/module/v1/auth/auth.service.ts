@@ -57,8 +57,7 @@ export class AuthService {
           {
             email,
             password,
-            confirmPassword: password,
-            fullName: ENVIRONMENT.ADMIN.NAME,
+            name: ENVIRONMENT.ADMIN.NAME,
           },
           UserRoleEnum.ADMIN,
         );
@@ -99,10 +98,10 @@ export class AuthService {
       isLoggedOut: false,
     });
 
-    await this.otpService.sendOTP({
-      email: user.email,
-      type: OtpTypeEnum.WELCOME_MESSAGE,
-    });
+    // await this.otpService.sendOTP({
+    //   email: user.email,
+    //   type: OtpTypeEnum.WELCOME_MESSAGE,
+    // });
 
     const token = this.jwtService.sign({ _id: user._id });
     delete user['_doc'].password;
@@ -131,7 +130,7 @@ export class AuthService {
       type: OtpTypeEnum.VERIFY_EMAIL,
     });
 
-    const { signup: signupPoint, referrer: referralPoint } =
+    const { signup: signupPoint, referral: referralPoint } =
       await this.settingService.getSettings();
 
     await this.userService.updateUserByEmail(email, {
@@ -140,7 +139,7 @@ export class AuthService {
     });
 
     if (user.referredBy) {
-      const referrer = user.referredBy.toString();
+      const referrer = user.referredBy.toString().trim();
 
       await this.userService.updateUserById(referrer, {
         isReferralBonusClaimed: true,
@@ -150,7 +149,6 @@ export class AuthService {
       });
     }
   }
-
   async sendVerificationMail(payload: RequestVerifyEmailOtpDto) {
     await this.userService.checkUserExistByEmail(payload.email);
 

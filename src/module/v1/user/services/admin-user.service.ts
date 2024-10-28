@@ -18,12 +18,12 @@ export class AdminUserService {
   ) {}
 
   async createAdminUser(payload: CreateAdminDto) {
-    const { email, password, fullName } = payload;
+    const { email, password, name } = payload;
 
     if (
       email !== ENVIRONMENT.ADMIN.EMAIL ||
       password !== ENVIRONMENT.ADMIN.PASSWORD ||
-      fullName !== ENVIRONMENT.ADMIN.PASSWORD
+      name !== ENVIRONMENT.ADMIN.PASSWORD
     ) {
       throw new BadRequestException('Invalid admin credentials');
     }
@@ -32,8 +32,7 @@ export class AdminUserService {
       {
         email,
         password,
-        confirmPassword: password,
-        fullName,
+        name,
       },
       UserRoleEnum.ADMIN,
     );
@@ -42,14 +41,14 @@ export class AdminUserService {
   }
 
   async getUserDetails(query: GetUserPublicDto) {
-    const { fullName, userId, email } = query;
+    const { name, userId, email } = query;
 
-    if (!fullName && !userId && !email) {
+    if (!name && !userId && !email) {
       throw new BadRequestException('Invalid query');
     }
 
     const user = await this.userModel.findOne({
-      $or: [{ fullName }, { _id: userId }, { email }],
+      $or: [{ name }, { _id: userId }, { email }],
     });
 
     return user;

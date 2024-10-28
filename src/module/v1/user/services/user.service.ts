@@ -6,7 +6,11 @@ import {
 } from '@nestjs/common';
 import { User, UserDocument } from '../schemas/user.schema';
 import { ClientSession, Model } from 'mongoose';
-import { CreateUserDto, GoogleAuthDto } from '../dto/user.dto';
+import {
+  CreateUserDto,
+  GoogleAuthDto,
+  UpgradeBasketDto,
+} from '../dto/user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { BaseHelper } from '../../../../common/utils/helper.util';
 import { UserRoleEnum } from 'src/common/enums/user.enum';
@@ -27,7 +31,7 @@ export class UserService {
     role?: UserRoleEnum,
   ): Promise<UserDocument> {
     try {
-      const { referralCode, password, confirmPassword } = payload;
+      const { name, referralCode, password } = payload;
       delete payload.referralCode; // delete the referral code to prevent persisting this as the new user referral code
 
       let referralUserId: string | undefined;
@@ -44,19 +48,15 @@ export class UserService {
       // Validate the password
       BaseHelper.validatePassword(password);
 
-      if (password !== confirmPassword) {
-        throw new BadRequestException(
-          'Password and confirm password do not match',
-        );
-      }
-
       const hashedPassword = await BaseHelper.hashData(password);
+      const userReferralCode = await BaseHelper.generateReferralCode(name);
 
       const result = await this.userModel.create({
         ...payload,
         password: hashedPassword,
         ...(role ? { role } : { role: UserRoleEnum.USER }),
         referredBy: referralUserId,
+        referralCode: userReferralCode,
       });
 
       // update referral user referral count
@@ -114,7 +114,7 @@ export class UserService {
   }
 
   async updateUserById(userId: string, details: any) {
-    return this.userModel.updateOne({ userId }, details);
+    await this.userModel.updateOne({ _id: userId }, details).exec();
   }
 
   async checkUserExistByEmail(email: string): Promise<boolean> {
@@ -163,4 +163,26 @@ export class UserService {
   //     referredBy: user._id,
   //   });
   // }
+
+  async chooseBasket(user: UserDocument, payload: UpgradeBasketDto) {
+    const { plan } = payload;
+
+    const existingUser = await this.userModel.findById(user);
+
+    if (!existingUser) {
+      throw new BadRequestException('User not found');
+    }
+
+    return await this.userModel.findOneAndUpdate(
+      { _id: user },
+      {
+        $set: {
+          basket: plan,
+        },
+      },
+      {
+        new: true,
+      },
+    );
+  }
 }
