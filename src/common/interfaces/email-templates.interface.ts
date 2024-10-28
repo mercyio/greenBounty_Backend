@@ -8,6 +8,7 @@ export interface ISubscribeToWaitListEmailTemplate {
 
 export interface IVerifyEmailTemplate {
   code: number;
+  name: string;
 }
 
 export type ISendResetPasswordEmailTemplate = IVerifyEmailTemplate;

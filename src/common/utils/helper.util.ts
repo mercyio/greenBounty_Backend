@@ -18,7 +18,7 @@ export class BaseHelper {
     return await bcrypt.compare(data, hashed);
   }
   static generateOTP(): number {
-    return Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+    return Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000;
   }
 
   static isValidFileNameAwsUpload = (fileName: string) => {

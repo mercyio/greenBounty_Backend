@@ -76,11 +76,11 @@ export class OtpService {
 
     switch (type) {
       case OtpTypeEnum.RESET_PASSWORD:
-        template = ForgotPasswordTemplate({ code });
+        template = ForgotPasswordTemplate({ code, name: email.split('@')[0] });
         subject = 'Reset Your Password';
         break;
       case OtpTypeEnum.VERIFY_EMAIL:
-        template = VerifyEmailTemplate({ code });
+        template = VerifyEmailTemplate({ code, name: email.split('@')[0] });
         subject = 'Verify Email';
         break;
       case OtpTypeEnum.SUBSCRIBE_TO_WAITLIST:
