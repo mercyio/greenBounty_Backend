@@ -21,6 +21,8 @@ import { OtpService } from '../otp/otp.service';
 import { SettingsService } from '../settings/settings.service';
 import { UserRoleEnum } from 'src/common/enums/user.enum';
 import { ENVIRONMENT } from 'src/common/configs/environment';
+import { MailService } from '../mail/mail.service';
+import { welcomeEmailTemplate } from '../mail/templates/welcome.email';
 
 @Injectable()
 export class AuthService {
@@ -29,6 +31,7 @@ export class AuthService {
     private jwtService: JwtService,
     private otpService: OtpService,
     private settingService: SettingsService,
+    private mailService: MailService,
   ) {}
 
   async register(payload: CreateUserDto) {
@@ -127,7 +130,7 @@ export class AuthService {
     await this.otpService.verifyOTP({
       code,
       email,
-      type: OtpTypeEnum.WELCOME_MESSAGE,
+      type: OtpTypeEnum.VERIFY_EMAIL,
     });
 
     const { signup: signupPoint, referral: referralPoint } =
@@ -148,11 +151,19 @@ export class AuthService {
         },
       });
     }
+
+    const welcomeEmailName = user?.name || 'User';
+    await this.mailService.sendEmail(
+      user.email,
+      `Welcome To ${ENVIRONMENT.APP.NAME}`,
+      welcomeEmailTemplate({
+        name: welcomeEmailName,
+      }),
+    );
   }
 
   async sendVerificationMail(payload: RequestVerifyEmailOtpDto) {
     await this.userService.checkUserExistByEmail(payload.email);
-
     await this.otpService.sendOTP({
       ...payload,
       type: OtpTypeEnum.VERIFY_EMAIL,
@@ -162,24 +173,54 @@ export class AuthService {
   async sendPasswordResetEmail(payload: ForgotPasswordDto) {
     await this.userService.checkUserExistByEmail(payload.email);
 
+    await this.userService.updateUserByEmail(payload.email, {
+      emailVerified: false,
+    });
+
     await this.otpService.sendOTP({
       ...payload,
-      type: OtpTypeEnum.RESET_PASSWORD,
+      type: OtpTypeEnum.VERIFY_EMAIL,
+    });
+  }
+
+  async verifyPasswordResetEmail(payload: VerifyEmailDto) {
+    const { code, email } = payload;
+
+    const user = await this.userService.getUserByEmail(email);
+
+    if (!user) {
+      throw new BadRequestException('Invalid Email');
+    }
+
+    await this.userService.updateUserByEmail(payload.email, {
+      emailVerified: true,
+    });
+
+    await this.otpService.verifyOTP({
+      code,
+      email,
+      type: OtpTypeEnum.VERIFY_EMAIL,
     });
   }
 
   async resetPassword(payload: ResetPasswordDto) {
-    const { email, password, confirmPassword, code } = payload;
+    const { email, password, confirmPassword } = payload;
+
+    const user = await this.userService.getUserByEmail(email);
+
+    if (!user) {
+      throw new BadRequestException('Invalid Email');
+    }
+
+    if (!user.emailVerified) {
+      throw new BadRequestException(
+        'kindly verify your email to reset your password',
+      );
+    }
 
     if (password !== confirmPassword) {
       throw new ConflictException('Passwords do not match');
     }
-
-    await this.otpService.verifyOTP({
-      email,
-      code,
-      type: OtpTypeEnum.RESET_PASSWORD,
-    });
 
     const hashedPassword = await BaseHelper.hashData(password);
 

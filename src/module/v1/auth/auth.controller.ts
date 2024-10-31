@@ -58,6 +58,13 @@ export class AuthController {
   }
 
   @Public()
+  @Post('forgot-password/verify')
+  @ResponseMessage(RESPONSE_CONSTANT.AUTH.EMAIL_VERIFICATION_SUCCESS)
+  async verifyPasswordResetEmail(@Body() payload: VerifyEmailDto) {
+    return await this.authService.verifyEmail(payload);
+  }
+
+  @Public()
   @Post('forgot-password/update')
   @ResponseMessage(RESPONSE_CONSTANT.AUTH.PASSWORD_RESET_SUCCESS)
   async resetPassword(@Body() payload: ResetPasswordDto) {

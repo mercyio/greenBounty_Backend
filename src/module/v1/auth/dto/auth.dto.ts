@@ -28,8 +28,8 @@ export class ForgotPasswordDto {
 }
 
 export class ResetPasswordDto extends LoginDto {
-  @IsNumber()
-  code: number;
+  @IsString()
+  password: string;
 
   @IsString()
   confirmPassword: string;
