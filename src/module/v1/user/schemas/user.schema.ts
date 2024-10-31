@@ -40,6 +40,9 @@ export class User {
   @Prop({ default: 0 })
   wallet: number;
 
+  @Prop({ default: null })
+  profilePhoto: string;
+
   @Prop({ default: false })
   isGoogleAuth: boolean;
 
