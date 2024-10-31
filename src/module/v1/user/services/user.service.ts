@@ -9,6 +9,7 @@ import { ClientSession, Model } from 'mongoose';
 import {
   CreateUserDto,
   GoogleAuthDto,
+  UpdateUserDto,
   UpgradeBasketDto,
 } from '../dto/user.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -16,6 +17,10 @@ import { BaseHelper } from '../../../../common/utils/helper.util';
 import { UserRoleEnum } from 'src/common/enums/user.enum';
 import { RepositoryService } from '../../repository/repository.service';
 import { SettingsService } from '../../settings/settings.service';
+import {
+  ProfilePhotoHistory,
+  ProfilePhotoHistoryDocument,
+} from '../schemas/profile-photo-history.schema';
 
 @Injectable()
 export class UserService {
@@ -24,6 +29,8 @@ export class UserService {
     private userModel: Model<UserDocument>,
     private repositoryService: RepositoryService,
     private settingService: SettingsService,
+    @InjectModel(ProfilePhotoHistory.name)
+    private profilePhotoHistoryModel: Model<ProfilePhotoHistoryDocument>,
   ) {}
 
   async createUser(
@@ -184,5 +191,52 @@ export class UserService {
         new: true,
       },
     );
+  }
+
+  async updateUser(
+    userId: string,
+    payload: UpdateUserDto,
+    photo?: Express.Multer.File,
+  ): Promise<UserDocument> {
+    const { deleteProfilePhoto } = payload;
+
+    const user = await this.userModel.findById(userId);
+
+    let photoUrl = null;
+
+    if ((photo && user?.profilePhoto) || deleteProfilePhoto) {
+      await this.profilePhotoHistoryModel.create({
+        user: userId,
+        profilePhoto: user?.profilePhoto,
+      });
+    }
+
+    if (photo) {
+      const validImageMimeTypes = ['image/png', 'image/jpg', 'image/jpeg'];
+
+      if (!validImageMimeTypes.includes(photo.mimetype)) {
+        throw new BadRequestException('Invalid image');
+      }
+
+      // const uploadRes = await uploadSingleFile(photo, 'profile-photos');
+      // photoUrl = uploadRes?.url || null;
+
+      // Just store the filename as URL for now
+      photoUrl = photo.originalname;
+    }
+
+    const updateData = {
+      ...payload,
+    };
+
+    if (photo && photoUrl) {
+      updateData['profilePhoto'] = photoUrl;
+    } else if (deleteProfilePhoto) {
+      updateData['profilePhoto'] = null;
+    }
+
+    return this.userModel.findOneAndUpdate({ _id: userId }, updateData, {
+      new: true,
+    });
   }
 }

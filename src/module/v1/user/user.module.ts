@@ -7,9 +7,16 @@ import { RepositoryModule } from '../repository/repository.module';
 import { AdminUserController } from './controllers/admin-user.controller';
 import { AdminUserService } from './services/admin-user.service';
 import { SettingsModule } from '../settings/settings.module';
+import {
+  ProfilePhotoHistory,
+  ProfilePhotoHistorySchema,
+} from './schemas/profile-photo-history.schema';
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: ProfilePhotoHistory.name, schema: ProfilePhotoHistorySchema },
+    ]),
     RepositoryModule,
     SettingsModule,
   ],

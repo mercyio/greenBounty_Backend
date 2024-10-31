@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsBooleanString,
   IsEmail,
   IsEnum,
@@ -58,4 +59,15 @@ export class UpgradeBasketDto {
   @IsString()
   @IsEnum(BasketTypeEnum)
   plan: BasketTypeEnum;
+}
+
+export class UpdateUserDto {
+  @IsOptional()
+  @IsString()
+  name?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => (value === 'true' ? true : false))
+  deleteProfilePhoto?: boolean;
 }
