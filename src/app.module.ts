@@ -9,6 +9,7 @@ import { SettingsModule } from './module/v1/settings/settings.module';
 import { WaitListModule } from './module/v1/waitList/waitList.module';
 import { PaymentModule } from './module/v1/payment/payment.module';
 import { PremiumModule } from './module/v1/premium-basket/premium-basket.module';
+import { WithdrawalAccountModule } from './module/v1/withdrawal-account/withdrawal-account.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { PremiumModule } from './module/v1/premium-basket/premium-basket.module'
     WaitListModule,
     PaymentModule,
     PremiumModule,
+    WithdrawalAccountModule,
   ],
   controllers: [],
   providers: [],
