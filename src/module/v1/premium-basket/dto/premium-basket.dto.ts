@@ -1,7 +1,8 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsEnum, IsString } from 'class-validator';
+import { BasketTypeEnum } from 'src/common/enums/basket.enum';
 
-export class UpgradeToPremiumBasketDto {
-  @IsNumber()
-  @IsNotEmpty()
-  amount: number; // Amount to be paid for the upgrade
+export class SelectBasketDto {
+  @IsString()
+  @IsEnum(BasketTypeEnum)
+  plan: BasketTypeEnum;
 }

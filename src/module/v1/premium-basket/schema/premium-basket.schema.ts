@@ -17,9 +17,6 @@ export class PremiumBasket {
   @Prop({ required: true, default: [] })
   items: [];
 
-  //   @Prop({ enum: OrderStatusEnum, default: OrderStatusEnum.PENDING })
-  //   status: OrderStatusEnum;
-
   @Prop({ enum: PaymentStatusEnum, default: PaymentStatusEnum.Pending })
   paymentStatus: PaymentStatusEnum;
 

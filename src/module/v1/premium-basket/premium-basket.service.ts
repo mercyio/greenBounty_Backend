@@ -28,7 +28,7 @@ import {
   IFlutterwaveInitializePayment,
 } from 'src/common/interfaces/payment.interface';
 import { UserDocument } from '../user/schemas/user.schema';
-import { UpgradeToPremiumBasketDto } from './dto/premium-basket.dto';
+import { SelectBasketDto } from './dto/premium-basket.dto';
 import { PaymentService } from '../payment/services/payment.service';
 import { RepositoryService } from '../repository/repository.service';
 
@@ -141,11 +141,15 @@ export class PremiumBasketService extends BaseRepositoryService<PremiumBasketDoc
     }
   }
 
-  async upgrade(payload: UpgradeToPremiumBasketDto, user: UserDocument) {
+  async selectBasket(payload: SelectBasketDto, user: UserDocument) {
     console.log('user to upgrade', user);
 
     if (!user) {
       throw new NotFoundException('User not found');
+    }
+
+    if (payload.plan === BasketTypeEnum.STANDARD) {
+      return 'Standard basket selected successfully';
     }
 
     const session = await this.premiumModel.db.startSession();
