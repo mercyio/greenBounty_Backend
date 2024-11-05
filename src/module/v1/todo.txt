@@ -3,3 +3,6 @@
 3. referral free coin (done)
 4. basket (done)
 5. waitlist mail (done)
+
+
+document how to get the app encryption key for other devs
