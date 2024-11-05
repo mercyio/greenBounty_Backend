@@ -15,7 +15,7 @@ import { join } from 'path';
         },
       },
       defaults: {
-        from: '"No Reply" <noreply>@greenBounty.com>',
+        from: '"GreenBounty" <hello>@greenBounty.com>',
       },
       template: {
         dir: join(__dirname, 'templates'),

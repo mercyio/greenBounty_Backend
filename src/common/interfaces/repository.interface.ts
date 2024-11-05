@@ -3,6 +3,7 @@ import { PaginationDto } from '../../module/v1/repository/dto/repository.dto';
 
 export interface IFindQuery<T> {
   query?: FilterQuery<T>;
+  options?: FilterQuery<T>;
   showDeleted?: boolean;
 }
 

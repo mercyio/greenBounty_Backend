@@ -2,6 +2,8 @@ import { randomBytes, createCipheriv, createDecipheriv } from 'crypto';
 import * as bcrypt from 'bcrypt';
 import { ENVIRONMENT } from '../configs/environment';
 import { BadRequestException } from '@nestjs/common';
+// import { nanoid } from 'nanoid';
+import { CacheHelper } from './redis.util';
 
 const encryptionKeyFromEnv = ENVIRONMENT.APP.ENCRYPTION_KEY;
 
@@ -30,6 +32,9 @@ export class BaseHelper {
     data: string,
     encryptionKey: string = encryptionKeyFromEnv,
   ): string {
+    console.log('data', data);
+    console.log('encryption key', encryptionKey);
+
     const iv = randomBytes(16); // Generate a 16-byte IV
     const cipher = createCipheriv(
       'aes-256-cbc',
@@ -94,10 +99,23 @@ export class BaseHelper {
   }
 
   static generateReferralCode(name: string): string {
-    const formattedName = name.toLowerCase().replace(/\s+/g, '_');
-    // Generate a random alphanumeric string of a specified length
+    const formattedName = name.toLowerCase().replace(/\s+/g, '');
     const uniqueId = Math.random().toString(36).substring(2, 8);
-    const referralCode = `GreenBounty-user=${formattedName}${uniqueId}`;
+    const referralCode = `GB_${formattedName}${uniqueId}`;
     return referralCode;
   }
+
+  // static generateReferralCode(userId: string): string {
+  //   // Generate a unique referral code for the user by combining the first 4 and last 3 digits of the user's ID
+  //   const uniqueId =
+  //     userId.toString().slice(0, 4) + userId.toString().slice(-3);
+  //   const randomChars = nanoid(6);
+
+  //   return `GB-${uniqueId}${randomChars}`;
+  // }
 }
+
+export const CacheHelperUtil = new CacheHelper();
+
+// const res = BaseHelper.generateEncryptionKey();
+// console.log('res', res);

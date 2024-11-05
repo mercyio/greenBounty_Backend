@@ -43,6 +43,23 @@ export interface IEnvironment {
     PASSWORD: string;
     NAME: string;
   };
+  TWILLO: {
+    ACCOUNT_ID: string;
+    AUTH_TOKEN: string;
+    FROM: string;
+  };
+  FLUTTERWAVE: {
+    HOST: string;
+    WEBHOOK_SECRET: string;
+  };
+  PAYSTACK: {
+    HOST: string;
+    WEBHOOK_SECRET: string;
+  };
+  VPAY: {
+    HOST: string;
+    WEBHOOK_SECRET: string;
+  };
 }
 
 export const ENVIRONMENT: IEnvironment = {
@@ -85,5 +102,22 @@ export const ENVIRONMENT: IEnvironment = {
     EMAIL: process.env.ADMIN_EMAIL,
     PASSWORD: process.env.ADMIN_PASSWORD,
     NAME: process.env.ADMIN_NAME,
+  },
+  TWILLO: {
+    ACCOUNT_ID: process.env.ACCOUNT_ID,
+    AUTH_TOKEN: process.env.AUTH_TOKEN,
+    FROM: process.env.FROM,
+  },
+  FLUTTERWAVE: {
+    HOST: process.env.FLUTTERWAVE_HOST,
+    WEBHOOK_SECRET: process.env.FLUTTERWAVE_WEBHOOK_SECRET,
+  },
+  PAYSTACK: {
+    HOST: process.env.PAYSTACK_HOST,
+    WEBHOOK_SECRET: process.env.PAYSTACK_WEBHOOK_SECRET,
+  },
+  VPAY: {
+    HOST: process.env.VPAY_HOST,
+    WEBHOOK_SECRET: process.env.VPAY_WEBHOOK_SECRET,
   },
 };

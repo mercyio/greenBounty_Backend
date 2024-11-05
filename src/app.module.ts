@@ -7,6 +7,8 @@ import { MailModule } from './module/v1/mail/mail.module';
 import { OtpModule } from './module/v1/otp/otp.module';
 import { SettingsModule } from './module/v1/settings/settings.module';
 import { WaitListModule } from './module/v1/waitList/waitList.module';
+import { PaymentModule } from './module/v1/payment/payment.module';
+import { PremiumModule } from './module/v1/premium-basket/premium-basket.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { WaitListModule } from './module/v1/waitList/waitList.module';
     RepositoryModule,
     SettingsModule,
     WaitListModule,
+    PaymentModule,
+    PremiumModule,
   ],
   controllers: [],
   providers: [],
