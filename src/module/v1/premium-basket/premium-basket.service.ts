@@ -149,7 +149,9 @@ export class PremiumBasketService extends BaseRepositoryService<PremiumBasketDoc
     }
 
     if (payload.plan === BasketTypeEnum.STANDARD) {
-      return 'Standard basket selected successfully';
+      return await this.userService.updateUserById(user._id.toString(), {
+        basket: BasketTypeEnum.STANDARD,
+      });
     }
 
     const session = await this.premiumModel.db.startSession();
@@ -164,14 +166,20 @@ export class PremiumBasketService extends BaseRepositoryService<PremiumBasketDoc
         premiumPrice,
       );
       // await this.upgradeToPremium(userId);
-      await this.userService.updateUserById(user._id.toString(), {
-        basket: BasketTypeEnum.PREMIUM,
-      });
+      const premiumUser = await this.userService.updateUserById(
+        user._id.toString(),
+        {
+          basket: BasketTypeEnum.PREMIUM,
+        },
+      );
 
       await session.commitTransaction();
       sessionCommitted = true;
 
-      return { message: 'Upgrade successful. Payment link:', paymentLink };
+      return {
+        premiumUser,
+        paymentLink,
+      };
     } catch (error) {
       console.error('error while making upgrades', error);
       if (!sessionCommitted) {
