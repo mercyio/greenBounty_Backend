@@ -6,3 +6,4 @@
 
 
 document how to get the app encryption key for other devs
+git reset --soft HEAD~1
