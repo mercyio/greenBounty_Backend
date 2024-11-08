@@ -14,7 +14,7 @@ export class Payment {
   @Prop()
   imageUrl: string;
 
-  @Prop({ default: 0 })
+  @Prop({ default: 1000 })
   fee: number;
 
   @Prop({ default: true })

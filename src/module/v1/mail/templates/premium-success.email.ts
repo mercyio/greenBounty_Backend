@@ -62,7 +62,7 @@ export function premiumBasketNotificationEmailTemplate(
     </tr>
     <tr>
       <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Amount Paid</th>
-      <td style="border: 1px solid #ddd; padding: 8px;">${data.currencySymbol}${data.totalAmount.toFixed(2)}</td>
+      <td style="border: 1px solid #ddd; padding: 8px;">${data.currencySymbol}${data.totalAmount}</td>
     </tr>
   </table>
 

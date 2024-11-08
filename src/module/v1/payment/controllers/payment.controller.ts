@@ -22,7 +22,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { PaginationDto } from '../../repository/dto/repository.dto';
 import { CACHE_EXPIRY } from 'src/common/constants/cache.constant';
 
-@Controller('payment')
+@Controller('premium-payment')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 

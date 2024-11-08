@@ -12,7 +12,14 @@ export class PremiumController {
   async selectBasket(
     @Body() payload: SelectBasketDto,
     @LoggedInUserDecorator() user: UserDocument,
+    // basketId: string,
+    // amountPaid: number,
   ) {
-    return this.premiumService.selectBasket(payload, user);
+    return this.premiumService.selectBasket(
+      payload,
+      user,
+      // basketId,
+      // amountPaid,
+    );
   }
 }
