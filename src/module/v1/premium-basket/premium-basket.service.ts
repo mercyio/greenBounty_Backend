@@ -52,7 +52,7 @@ export class PremiumBasketService extends BaseRepositoryService<PremiumBasketDoc
     basketId: string,
     paymentObject: any,
     amountPaid: number,
-  ): Promise<void> {
+  ) {
     const user = await this.userService.findOneById(userId);
 
     if (!user) {
@@ -62,6 +62,12 @@ export class PremiumBasketService extends BaseRepositoryService<PremiumBasketDoc
     if (user.basket === BasketTypeEnum.PREMIUM) {
       throw new BadRequestException('User already has premium subscription');
     }
+
+    // if (payload.plan === BasketTypeEnum.STANDARD) {
+    //   return await this.userService.updateUserById(user._id.toString(), {
+    //     basket: BasketTypeEnum.STANDARD,
+    //   });
+    // }
 
     const basket = await this.premiumModel.findById(basketId);
 
@@ -93,6 +99,13 @@ export class PremiumBasketService extends BaseRepositoryService<PremiumBasketDoc
     session.startTransaction();
 
     try {
+      const premiumPrice = 1000;
+
+      const paymentLink = await this.constructPaymentPayloadForUpgrade(
+        user,
+        premiumPrice,
+      );
+
       await Promise.all([
         this.userService.updateUserById(userId, {
           basket: BasketTypeEnum.PREMIUM,
@@ -132,6 +145,11 @@ export class PremiumBasketService extends BaseRepositoryService<PremiumBasketDoc
           }),
         ),
       ]);
+
+      return {
+        // user: premiumUser,
+        paymentLink,
+      };
     } catch (error) {
       if (!sessionCommitted) {
         await session.abortTransaction();
@@ -141,7 +159,12 @@ export class PremiumBasketService extends BaseRepositoryService<PremiumBasketDoc
     }
   }
 
-  async selectBasket(payload: SelectBasketDto, user: UserDocument) {
+  async selectBasket(
+    payload: SelectBasketDto,
+    user: UserDocument,
+    // basketId: string,
+    // amountPaid: number,
+  ) {
     console.log('user to upgrade', user);
 
     if (!user) {
@@ -165,7 +188,7 @@ export class PremiumBasketService extends BaseRepositoryService<PremiumBasketDoc
         user,
         premiumPrice,
       );
-      // await this.upgradeToPremium(userId);
+
       const premiumUser = await this.userService.updateUserById(
         user._id.toString(),
         {
@@ -176,8 +199,19 @@ export class PremiumBasketService extends BaseRepositoryService<PremiumBasketDoc
       await session.commitTransaction();
       sessionCommitted = true;
 
+      // try {
+      //   await this.premiumModel.findById(basketId);
+      //   await this.sendUpgradeNotifications(
+      //     user,
+      //     user._id.toString(),
+      //     amountPaid,
+      //   );
+      // } catch (notificationError) {
+      //   console.error('Notification sending failed:', notificationError);
+      // }
+
       return {
-        premiumUser,
+        user: premiumUser,
         paymentLink,
       };
     } catch (error) {
@@ -247,5 +281,34 @@ export class PremiumBasketService extends BaseRepositoryService<PremiumBasketDoc
     }
 
     return paymentUrl;
+  }
+
+  async sendUpgradeNotifications(
+    user: UserDocument,
+    basketId: string,
+    amountPaid: number,
+  ) {
+    await this.premiumModel.findById(basketId);
+
+    const emailContent = premiumBasketNotificationEmailTemplate({
+      user: user.name,
+      basketNumber: user._id.toString(),
+      upgradeDate: new Date().toLocaleDateString(),
+      totalAmount: amountPaid,
+      currencySymbol: '₦',
+    });
+
+    await Promise.all([
+      this.mailService.sendEmail(
+        user.email,
+        'Premium Upgrade Successful',
+        emailContent,
+      ),
+      this.mailService.sendEmail(
+        'greenBounty@gmail.com',
+        'New Premium Subscription',
+        emailContent,
+      ),
+    ]);
   }
 }

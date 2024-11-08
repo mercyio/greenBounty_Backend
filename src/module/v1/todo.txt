@@ -7,3 +7,18 @@
 
 document how to get the app encryption key for other devs
 git reset --soft HEAD~1
+
+https://np8nf7br-4999.uks1.devtunnels.ms/api/paystack/process/hook/internal
+
+
+ https://casual-welcome-bull.ngrok-free.app/api/paystack/process/hook/internal
+
+ https://grouper-allowed-widely.ngrok-free.app/api/paystack/process/hook/internal
+
+ https://np8nf7br-4999.uks1.devtunnels.ms/api/paystack/process/hook/internal
+
+
+
+ https://np8nf7br-4999.uks1.devtunnels.ms/api/paystack/process/hook/internal
+
+https://3ec3-105-112-102-183.ngrok-free.app/api/paystack/process/hook/internal

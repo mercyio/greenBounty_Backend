@@ -43,7 +43,7 @@ export class PaystackService {
     const decryptedSecret = BaseHelper.decryptData(
       paystackPaymentMethod.apiKey,
     );
-      
+
     try {
       const res = await this.httpService.axiosRef.post(
         `${ENVIRONMENT.PAYSTACK.HOST}/transaction/initialize`,
@@ -95,10 +95,10 @@ export class PaystackService {
       if (payload.event === 'charge.success') {
         console.log('paymentWebhook check 3');
         constructedPayload = {
-          orderId: payload.data.metadata.orderId,
-          reference: payload.data.reference,
+          basketId: payload.data.metadata.basketId,
+          // reference: payload.data.reference,
           paymentObject: payload,
-          amountPaid: payload.data.amount / 100,
+          fee: payload.data.amount / 1000,
           userIdFromMetadata: payload.data.metadata.userId,
         };
       }
