@@ -37,3 +37,9 @@ purchasing basket
 
 if user selects standard, check if user already has a basket and update basket to standard else create new basket
 if user selects premium, check if user already has an existing basket and updateto premium, else, create new basket
+
+recycling items
+create enums and interface for standard and premium recycle item types
+if the user is a standard user allow items only in the standardRecylcleItems to be selected
+do same for premium
+create 

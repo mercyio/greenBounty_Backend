@@ -31,7 +31,7 @@ import { RepositoryService } from '../repository/repository.service';
 import { SettingsService } from '../settings/settings.service';
 
 @Injectable()
-export class PremiumBasketService extends BaseRepositoryService<BasketDocument> {
+export class BasketService extends BaseRepositoryService<BasketDocument> {
   constructor(
     @InjectModel(Basket.name)
     private basketModel: Model<BasketDocument>,
@@ -183,7 +183,7 @@ export class PremiumBasketService extends BaseRepositoryService<BasketDocument> 
       ]);
     } else {
       // Premium basket flow
-      const { premiumBasket: premiumBasketPrice } =
+      const { premiumPricing: premiumBasketPrice } =
         await this.settingService.getSettings();
 
       return await this.constructPaymentPayloadForUpgrade(
@@ -247,5 +247,9 @@ export class PremiumBasketService extends BaseRepositoryService<BasketDocument> 
     }
 
     return paymentUrl;
+  }
+
+  async getUserBasket(userId: string) {
+    return this.basketModel.findOne({ user: userId });
   }
 }
