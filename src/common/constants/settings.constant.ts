@@ -5,6 +5,9 @@ export const SETTINGS: ISettings = {
     referral: 10,
     signup: 10,
   },
+  price: {
+    premiumBasket: 1000,
+  },
   coin: {
     name: 'GreenBounty',
     symbol: 'GB',

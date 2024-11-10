@@ -21,7 +21,7 @@ import {
   IFlutterwaveInitializePayment,
 } from 'src/common/interfaces/payment.interface';
 import { BaseRepositoryService } from '../../repository/base.service';
-import { PremiumBasketService } from '../../premium-basket/premium-basket.service';
+import { PremiumBasketService } from '../../basket/basket.service';
 
 @Injectable()
 export class PaymentService extends BaseRepositoryService<PaymentDocument> {
@@ -194,15 +194,14 @@ export class PaymentService extends BaseRepositoryService<PaymentDocument> {
   }
 
   async processPremiumBasketPayment(payload: {
-    userIdFromMetadata: string;
+    reference: string;
     basketId: string;
     paymentObject: object;
     amountPaid: number;
+    userIdFromMetadata?: string;
   }) {
     return await this.premiumService.upgradeToPremium(
-      payload.userIdFromMetadata,
       payload.basketId,
-      payload.paymentObject,
       payload.amountPaid,
     );
   }

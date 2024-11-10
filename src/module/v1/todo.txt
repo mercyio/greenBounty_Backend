@@ -22,3 +22,18 @@ https://np8nf7br-4999.uks1.devtunnels.ms/api/paystack/process/hook/internal
  https://np8nf7br-4999.uks1.devtunnels.ms/api/paystack/process/hook/internal
 
 https://3ec3-105-112-102-183.ngrok-free.app/api/paystack/process/hook/internal
+
+purchasing basket
+1. if user selects standard basket , upgrade basket in user basket in schema to standard 
+2. if user selects premium, [
+    1. check if user already has a basket.
+    2. generate payment link 
+    3. when webhook enters for successful payment, [
+        1. create transaction history
+        2. create user basket 
+        3. send invoice to users email.
+    ]
+]
+
+if user selects standard, check if user already has a basket and update basket to standard else create new basket
+if user selects premium, check if user already has an existing basket and updateto premium, else, create new basket

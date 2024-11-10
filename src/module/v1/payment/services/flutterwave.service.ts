@@ -97,7 +97,7 @@ export class FlutterwaveService {
         reference: event.data.tx_ref,
         paymentObject: event,
         amountPaid: event.data.amount,
-        userIdFromMetadata: event.data.meta.userId,
+        userId: event.data.meta.userId,
       };
 
       return await this.paymentService.processPremiumBasketPayment(

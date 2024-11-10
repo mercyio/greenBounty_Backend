@@ -90,7 +90,6 @@ export class VpayService {
     if (payload.event === 'charge.success') {
       console.log('paymentWebhook check 3');
       constructedPayload = {
-        orderId: payload.data.metadata.orderId,
         reference: payload.data.reference,
         paymentObject: payload,
         amountPaid: payload.data.amount / 100,

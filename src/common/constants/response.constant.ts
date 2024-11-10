@@ -28,4 +28,8 @@ export const RESPONSE_CONSTANT = {
     SETTINGS_UPDATED_SUCCESS: 'Settings updated successfully',
     SETTINGS_DELETED_SUCCESS: 'Settings deleted successfully',
   },
+  BASKET: {
+    SELECT_BASKET_PLAN_SUCCESS: 'Basket plan selected successfully',
+    PROCESS_BASKET_PAYMENT_SUCCESS: 'Basket upgraded to premium successfully',
+  },
 };
