@@ -16,7 +16,7 @@ import { Recycle, RecycleDocument } from './schema/recycle.schema';
 import { PaginationDto } from '../repository/dto/repository.dto';
 import { RepositoryService } from '../repository/repository.service';
 import { BaseRepositoryService } from '../repository/base.service';
-import { RecycleItemDto, UpdateRecycleItemDto } from './dto/recycle.dto';
+import { RecycleItemDto } from './dto/recycle.dto';
 
 @Injectable()
 export class RecycleItemService extends BaseRepositoryService<RecycleDocument> {
@@ -39,13 +39,13 @@ export class RecycleItemService extends BaseRepositoryService<RecycleDocument> {
     }
 
     const allowedItems =
-      user.basket === BasketTypeEnum.PREMIUM
+      basket.plan === BasketTypeEnum.PREMIUM
         ? PREMIUM_ALLOWED_ITEMS
         : STANDARD_ALLOWED_ITEMS;
 
     if (!allowedItems.includes(item)) {
       throw new BadRequestException(
-        `Your ${user.basket.toString().toLowerCase()} basket cannot recycle ${item}. Please upgrade to premium for more options.`,
+        `Your ${basket.plan.toString().toLowerCase()} basket cannot recycle ${item.toLowerCase()}. Please upgrade to premium for more options.`,
       );
     }
 
@@ -57,10 +57,10 @@ export class RecycleItemService extends BaseRepositoryService<RecycleDocument> {
     });
   }
 
-  async update(user: UserDocument, payload: UpdateRecycleItemDto) {
-    const { item, quantity, _id } = payload;
+  async update(user: UserDocument, itemId: string, payload: RecycleItemDto) {
+    const { item, quantity } = payload;
 
-    await this.checkRecycleItemExist(user._id.toString(), _id);
+    await this.checkRecycleItemExist(user._id.toString(), itemId);
     const basket = await this.basketService.getUserBasket(user._id.toString());
 
     const allowedItems =
@@ -70,12 +70,12 @@ export class RecycleItemService extends BaseRepositoryService<RecycleDocument> {
 
     if (!allowedItems.includes(item)) {
       throw new BadRequestException(
-        `Your ${basket.plan.toString().toLowerCase()} basket cannot recycle ${item}. Please upgrade to premium for more options.`,
+        `Your ${basket.plan.toString().toLowerCase()} basket cannot recycle ${item.toLocaleLowerCase()}. Please upgrade to premium for more options.`,
       );
     }
 
     return await this.recycleModel.findOneAndUpdate(
-      { _id, user: user._id },
+      { _id: itemId, user: user._id },
       {
         basket,
         item,
