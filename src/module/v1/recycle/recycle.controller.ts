@@ -40,7 +40,7 @@ export class RecycleItemController {
     @LoggedInUserDecorator() user: UserDocument,
     @Query() query: PaginationDto,
   ) {
-    return await this.recycleItemService.retrieve(user, query);
+    return await this.recycleItemService.retrieveUserRecycleItems(user, query);
   }
 
   @Delete()

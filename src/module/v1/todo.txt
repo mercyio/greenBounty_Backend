@@ -43,3 +43,11 @@ create enums and interface for standard and premium recycle item types
 if the user is a standard user allow items only in the standardRecylcleItems to be selected
 do same for premium
 create 
+
+pickup
+User creates pickup request with selected recycle items, status changes to pending
+Admin sees pending requests in dashboard
+Admin accepts request and assign recycler, status changes to accepted
+After physical pickup, admin marks as completed, 
+System moves items to history and gives rewards, status changes to completed
+Both user and admin can track status throughout process

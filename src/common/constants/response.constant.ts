@@ -32,4 +32,8 @@ export const RESPONSE_CONSTANT = {
     SELECT_BASKET_PLAN_SUCCESS: 'Basket plan selected successfully',
     PROCESS_BASKET_PAYMENT_SUCCESS: 'Basket upgraded to premium successfully',
   },
+  PICKUP: {
+    REQUEST_PICKUP_SUCCESS: 'Pickup request created successfully',
+    ASSIGN_RECYCLER_SUCCESS: 'Pickup recycler assigned successfully',
+  },
 };

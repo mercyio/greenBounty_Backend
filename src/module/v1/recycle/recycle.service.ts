@@ -85,7 +85,7 @@ export class RecycleItemService extends BaseRepositoryService<RecycleDocument> {
     );
   }
 
-  async retrieve(user: UserDocument, query: PaginationDto) {
+  async retrieveUserRecycleItems(user: UserDocument, query: PaginationDto) {
     return await this.repositoryService.paginate({
       model: this.recycleModel,
       query,
@@ -105,5 +105,17 @@ export class RecycleItemService extends BaseRepositoryService<RecycleDocument> {
     if (!recycleItem) {
       throw new NotFoundException('this item has not been recycled');
     }
+  }
+
+  async findUserItems(userId: string) {
+    const itemIds = await this.recycleModel
+      .find({
+        user: userId,
+        isDeleted: { $ne: true },
+      })
+      .select('_id')
+      .lean();
+
+    return itemIds.map((item) => item._id);
   }
 }
