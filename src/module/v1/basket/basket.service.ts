@@ -255,7 +255,7 @@ export class BasketService extends BaseRepositoryService<BasketDocument> {
   }
 
   async getAllBaskets(query: PaginationDto) {
-    await this.repositoryService.paginate({
+    return await this.repositoryService.paginate({
       model: this.basketModel,
       query,
       options: { isDeleted: { $ne: true } },
