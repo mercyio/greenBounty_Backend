@@ -10,7 +10,7 @@ import { WaitListModule } from './module/v1/waitList/waitList.module';
 import { PaymentModule } from './module/v1/payment/payment.module';
 import { BasketModule } from './module/v1/basket/basket.module';
 import { WithdrawalAccountModule } from './module/v1/withdrawal-account/withdrawal-account.module';
-import { AddRecyclableModule } from './module/v1/recycle/recycle.module';
+import { RecycleItemModule } from './module/v1/recycle/recycle.module';
 
 @Module({
   imports: [
@@ -25,7 +25,7 @@ import { AddRecyclableModule } from './module/v1/recycle/recycle.module';
     PaymentModule,
     BasketModule,
     WithdrawalAccountModule,
-    AddRecyclableModule,
+    RecycleItemModule,
   ],
   controllers: [],
   providers: [],

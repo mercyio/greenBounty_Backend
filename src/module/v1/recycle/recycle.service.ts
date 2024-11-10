@@ -3,7 +3,6 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { AddRecyclableItemDto } from './dto/recycle.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserDocument } from '../user/schemas/user.schema';
@@ -14,16 +13,25 @@ import {
 } from 'src/common/enums/recycle.enum';
 import { BasketService } from '../basket/basket.service';
 import { Recycle, RecycleDocument } from './schema/recycle.schema';
+import { PaginationDto } from '../repository/dto/repository.dto';
+import { RepositoryService } from '../repository/repository.service';
+import { BaseRepositoryService } from '../repository/base.service';
+import { RecycleItemDto, UpdateRecycleItemDto } from './dto/recycle.dto';
 
 @Injectable()
-export class AddRecyclableService {
+export class RecycleItemService extends BaseRepositoryService<RecycleDocument> {
   constructor(
     @InjectModel(Recycle.name)
     private recycleModel: Model<RecycleDocument>,
     private basketService: BasketService,
-  ) {}
+    private repositoryService: RepositoryService,
+  ) {
+    super(recycleModel);
+  }
 
-  async addRecycleItem(user: UserDocument, payload: AddRecyclableItemDto) {
+  async add(user: UserDocument, payload: RecycleItemDto) {
+    const { item, quantity } = payload;
+
     const basket = await this.basketService.getUserBasket(user._id.toString());
 
     if (!basket) {
@@ -35,17 +43,67 @@ export class AddRecyclableService {
         ? PREMIUM_ALLOWED_ITEMS
         : STANDARD_ALLOWED_ITEMS;
 
-    if (!allowedItems.includes(payload.item)) {
+    if (!allowedItems.includes(item)) {
       throw new BadRequestException(
-        `Your ${user.basket.toString().toLowerCase()} basket cannot recycle ${payload.item}. Please upgrade to premium for more options.`,
+        `Your ${user.basket.toString().toLowerCase()} basket cannot recycle ${item}. Please upgrade to premium for more options.`,
       );
     }
 
     return await this.recycleModel.create({
-      basket: payload.basketId,
-      item: payload.item,
-      quantity: payload.quantity,
       user: user._id,
+      basket,
+      item,
+      quantity,
     });
+  }
+
+  async update(user: UserDocument, payload: UpdateRecycleItemDto) {
+    const { item, quantity, _id } = payload;
+
+    await this.checkRecycleItemExist(user._id.toString(), _id);
+    const basket = await this.basketService.getUserBasket(user._id.toString());
+
+    const allowedItems =
+      basket.plan === BasketTypeEnum.PREMIUM
+        ? PREMIUM_ALLOWED_ITEMS
+        : STANDARD_ALLOWED_ITEMS;
+
+    if (!allowedItems.includes(item)) {
+      throw new BadRequestException(
+        `Your ${basket.plan.toString().toLowerCase()} basket cannot recycle ${item}. Please upgrade to premium for more options.`,
+      );
+    }
+
+    return await this.recycleModel.findOneAndUpdate(
+      { _id, user: user._id },
+      {
+        basket,
+        item,
+        quantity,
+      },
+      { new: true },
+    );
+  }
+
+  async retrieve(user: UserDocument, query: PaginationDto) {
+    return await this.repositoryService.paginate({
+      model: this.recycleModel,
+      query,
+      options: { user: user._id, isDeleted: { $ne: true } },
+    });
+  }
+
+  async checkRecycleItemExist(userId: string, itemId: string) {
+    const recycleItem = await this.recycleModel
+      .exists({
+        _id: itemId,
+        user: userId,
+        isDeleted: { $ne: true },
+      })
+      .populate('basket');
+
+    if (!recycleItem) {
+      throw new NotFoundException('this item has not been recycled');
+    }
   }
 }
