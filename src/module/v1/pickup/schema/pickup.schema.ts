@@ -28,7 +28,6 @@ export class Pickup {
   pickupAddress: string;
 
   @Prop({
-    default: '',
     type: mongoose.Schema.Types.ObjectId,
     ref: User.name,
   })
