@@ -1,5 +1,5 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { PremiumController as BasketController } from './basket.controller';
+import { BasketController as BasketController } from './basket.controller';
 import { BasketService } from './basket.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PaymentModule } from '../payment/payment.module';
