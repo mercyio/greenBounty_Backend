@@ -13,3 +13,10 @@ export enum PaymentStatusEnum {
 export enum TransactionTypeEnum {
   Premium = 'Premium',
 }
+
+export enum PickupStatusEnum {
+  Pending = 'Pending',
+  Accepted = 'Accepted',
+  Completed = 'Completed',
+  Canceled = 'Canceled',
+}

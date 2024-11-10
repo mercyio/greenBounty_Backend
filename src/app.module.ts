@@ -11,6 +11,7 @@ import { PaymentModule } from './module/v1/payment/payment.module';
 import { BasketModule } from './module/v1/basket/basket.module';
 import { WithdrawalAccountModule } from './module/v1/withdrawal-account/withdrawal-account.module';
 import { RecycleItemModule } from './module/v1/recycle/recycle.module';
+import { PickupModule } from './module/v1/pickup/pickup.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { RecycleItemModule } from './module/v1/recycle/recycle.module';
     BasketModule,
     WithdrawalAccountModule,
     RecycleItemModule,
+    PickupModule,
   ],
   controllers: [],
   providers: [],
