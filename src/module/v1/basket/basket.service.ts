@@ -29,6 +29,7 @@ import { SelectBasketDto } from './dto/basket.dto';
 import { PaymentService } from '../payment/services/payment.service';
 import { RepositoryService } from '../repository/repository.service';
 import { SettingsService } from '../settings/settings.service';
+import { PaginationDto } from '../repository/dto/repository.dto';
 
 @Injectable()
 export class BasketService extends BaseRepositoryService<BasketDocument> {
@@ -251,5 +252,13 @@ export class BasketService extends BaseRepositoryService<BasketDocument> {
 
   async getUserBasket(userId: string) {
     return this.basketModel.findOne({ user: userId });
+  }
+
+  async getAllBaskets(query: PaginationDto) {
+    await this.repositoryService.paginate({
+      model: this.basketModel,
+      query,
+      options: { isDeleted: { $ne: true } },
+    });
   }
 }
