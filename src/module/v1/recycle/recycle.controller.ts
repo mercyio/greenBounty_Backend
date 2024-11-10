@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { UserDocument } from '../user/schemas/user.schema';
 import { LoggedInUserDecorator } from 'src/common/decorators/logged_in_user.decorator';
-import { RecycleItemDto, UpdateRecycleItemDto } from './dto/recycle.dto';
+import { RecycleItemDto } from './dto/recycle.dto';
 import { IDQueryDto } from 'src/common/dto/query.dto';
 import { PaginationDto } from '../repository/dto/repository.dto';
 import { RecycleItemService } from './recycle.service';
@@ -29,9 +29,10 @@ export class RecycleItemController {
   @Patch()
   async update(
     @LoggedInUserDecorator() user: UserDocument,
-    @Body() payload: UpdateRecycleItemDto,
+    @Query() { _id }: IDQueryDto,
+    @Body() payload: RecycleItemDto,
   ) {
-    return await this.recycleItemService.update(user, payload);
+    return await this.recycleItemService.update(user, _id, payload);
   }
 
   @Get()
