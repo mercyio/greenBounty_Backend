@@ -6,7 +6,7 @@ export const SETTINGS: ISettings = {
     signup: 10,
   },
   price: {
-    premiumBasket: 1000,
+    premiumPricing: 1000,
   },
   coin: {
     name: 'GreenBounty',

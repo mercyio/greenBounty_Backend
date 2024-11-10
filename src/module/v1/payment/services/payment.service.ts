@@ -21,7 +21,7 @@ import {
   IFlutterwaveInitializePayment,
 } from 'src/common/interfaces/payment.interface';
 import { BaseRepositoryService } from '../../repository/base.service';
-import { PremiumBasketService } from '../../basket/basket.service';
+import { BasketService } from '../../basket/basket.service';
 
 @Injectable()
 export class PaymentService extends BaseRepositoryService<PaymentDocument> {
@@ -30,7 +30,7 @@ export class PaymentService extends BaseRepositoryService<PaymentDocument> {
     private paystackService: PaystackService,
     private flutterwaveService: FlutterwaveService,
     private repositoryService: RepositoryService,
-    private premiumService: PremiumBasketService,
+    private premiumService: BasketService,
   ) {
     super(paymentModel);
   }

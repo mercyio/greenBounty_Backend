@@ -1,18 +1,18 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { UserDocument } from '../user/schemas/user.schema';
 import { LoggedInUserDecorator } from 'src/common/decorators/logged_in_user.decorator';
-import { AddRecyclableDto } from './dto/recycle.dto';
 import { AddRecyclableService } from './recycle.service';
+import { AddRecyclableItemDto } from './dto/recycle.dto';
 
 @Controller('recycle')
 export class AddRecyclableController {
   constructor(private readonly addRecyclableService: AddRecyclableService) {}
 
   @Post()
-  async addRecycleables(
+  async addRecycleItem(
     @LoggedInUserDecorator() user: UserDocument,
-    @Body() payload: AddRecyclableDto,
+    @Body() payload: AddRecyclableItemDto,
   ) {
-    return this.addRecyclableService.addRecyclableToBasket(user, payload);
+    return this.addRecyclableService.addRecycleItem(user, payload);
   }
 }

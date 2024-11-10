@@ -4,8 +4,9 @@ export interface ISettings {
     signup: number;
   };
   price: {
-    premiumBasket: number;
+    premiumPricing: number;
   };
+
   coin: {
     name: string;
     symbol: string;

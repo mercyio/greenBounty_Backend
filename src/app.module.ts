@@ -8,7 +8,7 @@ import { OtpModule } from './module/v1/otp/otp.module';
 import { SettingsModule } from './module/v1/settings/settings.module';
 import { WaitListModule } from './module/v1/waitList/waitList.module';
 import { PaymentModule } from './module/v1/payment/payment.module';
-import { PremiumModule } from './module/v1/basket/basket.module';
+import { BasketModule } from './module/v1/basket/basket.module';
 import { WithdrawalAccountModule } from './module/v1/withdrawal-account/withdrawal-account.module';
 import { AddRecyclableModule } from './module/v1/recycle/recycle.module';
 
@@ -23,7 +23,7 @@ import { AddRecyclableModule } from './module/v1/recycle/recycle.module';
     SettingsModule,
     WaitListModule,
     PaymentModule,
-    PremiumModule,
+    BasketModule,
     WithdrawalAccountModule,
     AddRecyclableModule,
   ],

@@ -1,14 +1,14 @@
 import { IsEnum, IsMongoId, IsNumber, IsString } from 'class-validator';
-import { RecylabeTypeEnum } from 'src/common/enums/recyclabe.enum';
+import { RecycleItemTypeEnum } from 'src/common/enums/recycle.enum';
 
-export class AddRecyclableDto {
+export class AddRecyclableItemDto {
   @IsMongoId()
   @IsString()
   basketId: string;
 
   @IsString()
-  @IsEnum(RecylabeTypeEnum)
-  type: RecylabeTypeEnum;
+  @IsEnum(RecycleItemTypeEnum)
+  item: RecycleItemTypeEnum;
 
   @IsNumber()
   quantity: number;

@@ -9,7 +9,7 @@ import { PaystackController } from './controllers/paystack.controller';
 import { FlutterwaveController } from './controllers/flutterwave.controller';
 import { FlutterwaveService } from './services/flutterwave.service';
 import { RepositoryModule } from '../repository/repository.module';
-import { PremiumModule } from '../basket/basket.module';
+import { BasketModule } from '../basket/basket.module';
 
 @Global()
 @Module({
@@ -24,7 +24,7 @@ import { PremiumModule } from '../basket/basket.module';
       },
     }),
     RepositoryModule,
-    forwardRef(() => PremiumModule),
+    forwardRef(() => BasketModule),
   ],
   controllers: [PaymentController, PaystackController, FlutterwaveController],
   providers: [PaymentService, PaystackService, FlutterwaveService],
