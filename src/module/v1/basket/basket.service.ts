@@ -17,10 +17,7 @@ import { BaseRepositoryService } from '../repository/base.service';
 import { TransactionService } from '../transaction/transaction.service';
 import { MailService } from '../mail/mail.service';
 import { premiumBasketNotificationEmailTemplate } from '../mail/templates/premium-success.email';
-import {
-  PremiumBasket,
-  PremiumBasketDocument,
-} from './schema/premium-basket.schema';
+import { Basket, BasketDocument } from './schema/basket.schema';
 import { BasketTypeEnum } from 'src/common/enums/basket.enum';
 import { PaymentProvidersEnum } from 'src/common/enums/payment.enum';
 import {
@@ -28,31 +25,28 @@ import {
   IFlutterwaveInitializePayment,
 } from 'src/common/interfaces/payment.interface';
 import { UserDocument } from '../user/schemas/user.schema';
-import { SelectBasketDto } from './dto/premium-basket.dto';
+import { SelectBasketDto } from './dto/basket.dto';
 import { PaymentService } from '../payment/services/payment.service';
 import { RepositoryService } from '../repository/repository.service';
+import { SettingsService } from '../settings/settings.service';
 
 @Injectable()
-export class PremiumBasketService extends BaseRepositoryService<PremiumBasketDocument> {
+export class PremiumBasketService extends BaseRepositoryService<BasketDocument> {
   constructor(
-    @InjectModel(PremiumBasket.name)
-    private premiumModel: Model<PremiumBasketDocument>,
+    @InjectModel(Basket.name)
+    private basketModel: Model<BasketDocument>,
     private userService: UserService,
     private mailService: MailService,
+    private settingService: SettingsService,
     private transactionService: TransactionService,
     private repositoryService: RepositoryService,
     @Inject(forwardRef(() => PaymentService))
     private paymentService: PaymentService,
   ) {
-    super(premiumModel);
+    super(basketModel);
   }
 
-  async upgradeToPremium(
-    userId: string,
-    basketId: string,
-    paymentObject: any,
-    amountPaid: number,
-  ) {
+  async upgradeToPremium(userId: string, amountPaid: number) {
     const user = await this.userService.findOneById(userId);
 
     if (!user) {
@@ -62,14 +56,6 @@ export class PremiumBasketService extends BaseRepositoryService<PremiumBasketDoc
     if (user.basket === BasketTypeEnum.PREMIUM) {
       throw new BadRequestException('User already has premium subscription');
     }
-
-    // if (payload.plan === BasketTypeEnum.STANDARD) {
-    //   return await this.userService.updateUserById(user._id.toString(), {
-    //     basket: BasketTypeEnum.STANDARD,
-    //   });
-    // }
-
-    const basket = await this.premiumModel.findById(basketId);
 
     // Create or find a pending transaction for the premium upgrade
     let transaction = await this.transactionService.findOneQuery({
@@ -86,7 +72,7 @@ export class PremiumBasketService extends BaseRepositoryService<PremiumBasketDoc
         status: TransactionStatusEnum.Pending,
         totalAmount: amountPaid,
         type: TransactionTypeEnum.Premium,
-        metadata: paymentObject,
+        // metadata: paymentObject,
         settlement: 0,
       });
       if (!transaction) {
@@ -95,26 +81,36 @@ export class PremiumBasketService extends BaseRepositoryService<PremiumBasketDoc
     }
 
     let sessionCommitted = false;
-    const session = await this.premiumModel.db.startSession();
+    const session = await this.basketModel.db.startSession();
     session.startTransaction();
 
     try {
-      const premiumPrice = 1000;
-
-      const paymentLink = await this.constructPaymentPayloadForUpgrade(
-        user,
-        premiumPrice,
+      await this.transactionService.updateQuery(
+        { _id: transaction._id },
+        { status: TransactionStatusEnum.Completed },
+        session,
       );
 
+      const existingBasket = await this.basketModel.findOne({ user: user._id });
+
+      const basketOperation = existingBasket
+        ? await this.basketModel.findByIdAndUpdate(
+            existingBasket._id,
+            {
+              plan: BasketTypeEnum.PREMIUM,
+            },
+            { new: true },
+          )
+        : await this.basketModel.create({
+            user: user._id.toString(),
+            plan: BasketTypeEnum.PREMIUM,
+          });
+
       await Promise.all([
-        this.userService.updateUserById(userId, {
+        basketOperation,
+        await this.userService.updateUserById(user._id.toString(), {
           basket: BasketTypeEnum.PREMIUM,
         }),
-        this.transactionService.updateQuery(
-          { _id: transaction._id },
-          { status: TransactionStatusEnum.Completed },
-          session,
-        ),
       ]);
 
       await session.commitTransaction();
@@ -127,7 +123,7 @@ export class PremiumBasketService extends BaseRepositoryService<PremiumBasketDoc
           'Premium Upgrade Successful',
           premiumBasketNotificationEmailTemplate({
             user: user.name,
-            basketNumber: basket._id.toString(),
+            basketNumber: userId,
             upgradeDate: new Date().toLocaleDateString(),
             totalAmount: amountPaid,
             currencySymbol: '₦',
@@ -138,18 +134,13 @@ export class PremiumBasketService extends BaseRepositoryService<PremiumBasketDoc
           'New Premium Subscription',
           premiumBasketNotificationEmailTemplate({
             user: user.name,
-            basketNumber: basket._id.toString(),
+            basketNumber: userId,
             upgradeDate: new Date().toLocaleDateString(),
             totalAmount: amountPaid,
             currencySymbol: '₦',
           }),
         ),
       ]);
-
-      return {
-        // user: premiumUser,
-        paymentLink,
-      };
     } catch (error) {
       if (!sessionCommitted) {
         await session.abortTransaction();
@@ -159,71 +150,46 @@ export class PremiumBasketService extends BaseRepositoryService<PremiumBasketDoc
     }
   }
 
-  async selectBasket(
-    payload: SelectBasketDto,
-    user: UserDocument,
-    // basketId: string,
-    // amountPaid: number,
-  ) {
+  async selectBasket(user: UserDocument, payload: SelectBasketDto) {
     console.log('user to upgrade', user);
 
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
+    const [existingBasket] = await Promise.all([
+      await this.basketModel.findOne({ user: user._id }),
+    ]);
+
     if (payload.plan === BasketTypeEnum.STANDARD) {
-      return await this.userService.updateUserById(user._id.toString(), {
-        basket: BasketTypeEnum.STANDARD,
-      });
-    }
+      const basketOperation = existingBasket
+        ? await this.basketModel.findByIdAndUpdate(
+            existingBasket._id,
+            {
+              plan: BasketTypeEnum.STANDARD,
+            },
+            { new: true },
+          )
+        : await this.basketModel.create({
+            user: user._id.toString(),
+            plan: BasketTypeEnum.STANDARD,
+          });
 
-    const session = await this.premiumModel.db.startSession();
-    session.startTransaction();
-    let sessionCommitted = false;
+      await Promise.all([
+        basketOperation,
+        await this.userService.updateUserById(user._id.toString(), {
+          basket: BasketTypeEnum.STANDARD,
+        }),
+      ]);
+    } else {
+      // Premium basket flow
+      const { premiumBasket: premiumBasketPrice } =
+        await this.settingService.getSettings();
 
-    try {
-      const premiumPrice = 1000;
-
-      const paymentLink = await this.constructPaymentPayloadForUpgrade(
+      return await this.constructPaymentPayloadForUpgrade(
         user,
-        premiumPrice,
+        premiumBasketPrice,
       );
-
-      const premiumUser = await this.userService.updateUserById(
-        user._id.toString(),
-        {
-          basket: BasketTypeEnum.PREMIUM,
-        },
-      );
-
-      await session.commitTransaction();
-      sessionCommitted = true;
-
-      // try {
-      //   await this.premiumModel.findById(basketId);
-      //   await this.sendUpgradeNotifications(
-      //     user,
-      //     user._id.toString(),
-      //     amountPaid,
-      //   );
-      // } catch (notificationError) {
-      //   console.error('Notification sending failed:', notificationError);
-      // }
-
-      return {
-        user: premiumUser,
-        paymentLink,
-      };
-    } catch (error) {
-      console.error('error while making upgrades', error);
-      if (!sessionCommitted) {
-        await session.abortTransaction();
-      }
-      throw new UnprocessableEntityException(
-        'Unable to process upgrade, please try again later.',
-      );
-    } finally {
-      await session.endSession();
     }
   }
 
@@ -281,34 +247,5 @@ export class PremiumBasketService extends BaseRepositoryService<PremiumBasketDoc
     }
 
     return paymentUrl;
-  }
-
-  async sendUpgradeNotifications(
-    user: UserDocument,
-    basketId: string,
-    amountPaid: number,
-  ) {
-    await this.premiumModel.findById(basketId);
-
-    const emailContent = premiumBasketNotificationEmailTemplate({
-      user: user.name,
-      basketNumber: user._id.toString(),
-      upgradeDate: new Date().toLocaleDateString(),
-      totalAmount: amountPaid,
-      currencySymbol: '₦',
-    });
-
-    await Promise.all([
-      this.mailService.sendEmail(
-        user.email,
-        'Premium Upgrade Successful',
-        emailContent,
-      ),
-      this.mailService.sendEmail(
-        'greenBounty@gmail.com',
-        'New Premium Subscription',
-        emailContent,
-      ),
-    ]);
   }
 }

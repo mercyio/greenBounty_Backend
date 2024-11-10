@@ -96,10 +96,10 @@ export class PaystackService {
         console.log('paymentWebhook check 3');
         constructedPayload = {
           basketId: payload.data.metadata.basketId,
-          // reference: payload.data.reference,
+          reference: payload.data.reference,
           paymentObject: payload,
           fee: payload.data.amount / 1000,
-          userIdFromMetadata: payload.data.metadata.userId,
+          userId: payload.data.metadata.userId,
         };
       }
 

@@ -3,6 +3,9 @@ export interface ISettings {
     referral: number;
     signup: number;
   };
+  price: {
+    premiumBasket: number;
+  };
   coin: {
     name: string;
     symbol: string;

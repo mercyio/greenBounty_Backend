@@ -6,7 +6,7 @@ import {
   TransactionStatusEnum,
   TransactionTypeEnum,
 } from '../../../../common/enums/transaction.enum';
-import { PremiumBasket } from '../../premium-basket/schema/premium-basket.schema';
+import { Basket } from '../../basket/schema/basket.schema';
 import { BaseHelper } from 'src/common/utils/helper.util';
 
 export type TransactionDocument = Transaction & Document;
@@ -33,9 +33,9 @@ export class Transaction {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: PremiumBasket.name,
+    ref: Basket.name,
   })
-  premium: PremiumBasket;
+  premium: Basket;
 
   @Prop()
   totalAmount: number;
