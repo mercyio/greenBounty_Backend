@@ -1,18 +1,49 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { UserDocument } from '../user/schemas/user.schema';
 import { LoggedInUserDecorator } from 'src/common/decorators/logged_in_user.decorator';
-import { AddRecyclableService } from './recycle.service';
-import { AddRecyclableItemDto } from './dto/recycle.dto';
+import { RecycleItemDto, UpdateRecycleItemDto } from './dto/recycle.dto';
+import { IDQueryDto } from 'src/common/dto/query.dto';
+import { PaginationDto } from '../repository/dto/repository.dto';
+import { RecycleItemService } from './recycle.service';
 
 @Controller('recycle')
-export class AddRecyclableController {
-  constructor(private readonly addRecyclableService: AddRecyclableService) {}
+export class RecycleItemController {
+  constructor(private readonly recycleItemService: RecycleItemService) {}
 
   @Post()
-  async addRecycleItem(
+  async add(
     @LoggedInUserDecorator() user: UserDocument,
-    @Body() payload: AddRecyclableItemDto,
+    @Body() payload: RecycleItemDto,
   ) {
-    return this.addRecyclableService.addRecycleItem(user, payload);
+    return this.recycleItemService.add(user, payload);
+  }
+
+  @Patch()
+  async update(
+    @LoggedInUserDecorator() user: UserDocument,
+    @Body() payload: UpdateRecycleItemDto,
+  ) {
+    return await this.recycleItemService.update(user, payload);
+  }
+
+  @Get()
+  async retrieve(
+    @LoggedInUserDecorator() user: UserDocument,
+    @Query() query: PaginationDto,
+  ) {
+    return await this.recycleItemService.retrieve(user, query);
+  }
+
+  @Delete()
+  async delete(@Query() { _id }: IDQueryDto) {
+    return await this.recycleItemService.softDelete(_id);
   }
 }
