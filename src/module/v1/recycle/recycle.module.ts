@@ -5,10 +5,17 @@ import { RecycleItemService } from './recycle.service';
 import { BasketModule } from '../basket/basket.module';
 import { Recycle, RecycleSchema } from './schema/recycle.schema';
 import { RepositoryModule } from '../repository/repository.module';
+import {
+  RecycleHistory,
+  RecycleHistorySchema,
+} from './schema/recycle-hystory.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Recycle.name, schema: RecycleSchema }]),
+    MongooseModule.forFeature([
+      { name: Recycle.name, schema: RecycleSchema },
+      { name: RecycleHistory.name, schema: RecycleHistorySchema },
+    ]),
     BasketModule,
     RepositoryModule,
   ],
