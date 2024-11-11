@@ -125,11 +125,30 @@ export class RecycleItemService extends BaseRepositoryService<RecycleDocument> {
     return itemIds.map((item) => item._id);
   }
 
+  async findItemsByUserId(userId: string) {
+    const items = await this.recycleModel
+      .find({
+        user: userId,
+        isDeleted: { $ne: true },
+      })
+      .populate('user');
+
+    if (!items) {
+      throw new BadRequestException('invalid pickup request');
+    }
+    return items;
+  }
+
   async createRecycleHistory(userId: string) {
-    const history = await this.recycleHistoryModel.create({
-      user: userId,
+    const item = await this.findUserItems(userId);
+    await this.recycleModel.findByIdAndUpdate(userId, {
+      isDeleted: true,
     });
 
-    return await history.populate([{ path: 'recycleItems' }]);
+    return await this.recycleHistoryModel.create({
+      items: item,
+      pickupDate: new Date(),
+      user: userId,
+    });
   }
 }

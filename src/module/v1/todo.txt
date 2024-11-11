@@ -51,3 +51,6 @@ Admin accepts request and assign recycler, status changes to accepted (done)
 After physical pickup, admin marks as completed, 
 System moves items to history and gives rewards, status changes to completed
 Both user and admin can track status throughout process
+
+get recycleHystory and pickup recycleHystory
+get a users most recycled items
