@@ -19,7 +19,7 @@ export class RecycleHistory {
     type: mongoose.Schema.Types.ObjectId,
     ref: Pickup.name,
   })
-  pickupId: PickupDocument;
+  pickups: PickupDocument;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: Recycle.name }] })
   recycleItems: Recycle[];

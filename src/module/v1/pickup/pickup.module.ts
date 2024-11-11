@@ -9,10 +9,17 @@ import { AdminPickupService } from './services/admin-pickup.service';
 import { SettingsModule } from '../settings/settings.module';
 import { UserModule } from '../user/user.module';
 import { RepositoryModule } from '../repository/repository.module';
+import {
+  PickupHistory,
+  PickupHistorySchema,
+} from './schema/pickup-hystory.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Pickup.name, schema: PickupSchema }]),
+    MongooseModule.forFeature([
+      { name: Pickup.name, schema: PickupSchema },
+      { name: PickupHistory.name, schema: PickupHistorySchema },
+    ]),
     RecycleItemModule,
     SettingsModule,
     UserModule,
