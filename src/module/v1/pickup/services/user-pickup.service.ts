@@ -50,4 +50,12 @@ export class UserPickupService {
       createdAt: new Date(),
     });
   }
+
+  async getUserPendingRequest(user: UserDocument) {
+    return await this.pickupModel.findOne({
+      user: user._id,
+      status: PickupStatusEnum.Pending,
+      isDeleted: { $ne: true },
+    });
+  }
 }

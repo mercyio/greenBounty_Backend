@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { LoggedInUserDecorator } from 'src/common/decorators/logged_in_user.decorator';
 import { ResponseMessage } from 'src/common/decorators/response.decorator';
 import { UserDocument } from '../../user/schemas/user.schema';
@@ -17,5 +17,10 @@ export class UserPickupController {
     @Body() payload: CreatePickupDto,
   ) {
     return await this.pickupService.request(user, payload);
+  }
+
+  @Get()
+  async getUserPendingRequest(@LoggedInUserDecorator() user: UserDocument) {
+    return await this.pickupService.getUserPendingRequest(user);
   }
 }
