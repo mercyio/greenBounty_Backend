@@ -108,15 +108,10 @@ export class AdminPickupService {
 
   async createPickupHistory(userId: string, pickupId: string) {
     const pickup = await this.findPickupById(pickupId);
-    console.log('pickup', pickup);
-
-    await this.pickupModel.findByIdAndUpdate(pickup._id.toString(), {
-      isDeleted: true,
-    });
 
     return await this.pickupHistoryModel.create({
       pickup: pickup._id,
-      items: pickup.recycleItems,
+      recycleItems: pickup.recycleItems,
       pickupDate: pickup.pickupDate,
       pickupAddress: pickup.pickupAddress,
       user: userId,
