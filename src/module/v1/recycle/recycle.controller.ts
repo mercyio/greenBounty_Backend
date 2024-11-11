@@ -47,4 +47,15 @@ export class RecycleItemController {
   async delete(@Query() { _id }: IDQueryDto) {
     return await this.recycleItemService.softDelete(_id);
   }
+
+  @Get('history')
+  async retrieveUserRecycleItemsHistory(
+    @LoggedInUserDecorator() user: UserDocument,
+    @Query() query?: PaginationDto,
+  ) {
+    return await this.recycleItemService.retrieveUserRecycleItemsHistory(
+      user,
+      query,
+    );
+  }
 }
