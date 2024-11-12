@@ -139,8 +139,8 @@ export class BasketService extends BaseRepositoryService<BasketDocument> {
           user.email,
           'Premium Upgrade Successful',
           premiumBasketNotificationEmailTemplate({
-            user: user.email.split('@'),
-            basketNumber: userId,
+            user: [user.email.split('@')[0]],
+            basketNumber: basket._id.toString(),
             upgradeDate: new Date().toLocaleDateString(),
             totalAmount: amountPaid / 1000,
             currencySymbol: '₦',
@@ -150,14 +150,16 @@ export class BasketService extends BaseRepositoryService<BasketDocument> {
           'greenBounty@gmail.com',
           'New Premium Subscription',
           premiumBasketNotificationEmailTemplate({
-            user: user.email.split('@'),
-            basketNumber: userId,
+            user: [user.email.split('@')[0]],
+            basketNumber: basket._id.toString(),
             upgradeDate: new Date().toLocaleDateString(),
             totalAmount: amountPaid / 1000,
             currencySymbol: '₦',
           }),
         ),
       ]);
+
+      return transaction;
     } catch (error) {
       if (!sessionCommitted) {
         await session.abortTransaction();
