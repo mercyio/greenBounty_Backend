@@ -47,7 +47,11 @@ export class BasketService extends BaseRepositoryService<BasketDocument> {
     super(basketModel);
   }
 
-  async upgradeToPremium(userId: string, amountPaid: number) {
+  async upgradeToPremium(
+    userId: string,
+    amountPaid: number,
+    paymentObject: any,
+  ) {
     const user = await this.userService.findOneById(userId);
 
     if (!user) {
@@ -76,7 +80,7 @@ export class BasketService extends BaseRepositoryService<BasketDocument> {
         status: TransactionStatusEnum.Pending,
         totalAmount: 1000,
         type: TransactionTypeEnum.PremiumBasket,
-        // metadata: paymentObject,
+        metadata: paymentObject,
         settlement: 0,
         paymentMethod: 'paystack',
       });

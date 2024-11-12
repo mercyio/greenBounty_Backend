@@ -203,6 +203,7 @@ export class PaymentService extends BaseRepositoryService<PaymentDocument> {
     return await this.premiumService.upgradeToPremium(
       payload.basketId,
       payload.amountPaid,
+      payload.paymentObject,
     );
   }
 }

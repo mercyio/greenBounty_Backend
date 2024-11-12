@@ -28,8 +28,13 @@ export class BasketController {
   async upgradeToPremium(
     @LoggedInUserDecorator() user: UserDocument,
     amountPaid: number,
+    paymentObject: any,
   ) {
-    return this.basketService.upgradeToPremium(user._id.toString(), amountPaid);
+    return this.basketService.upgradeToPremium(
+      user._id.toString(),
+      amountPaid,
+      paymentObject,
+    );
   }
 
   @UseGuards(RolesGuard)
