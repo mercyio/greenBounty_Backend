@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Get,
   Patch,
   Post,
   Query,
@@ -16,7 +15,6 @@ import { NoCache } from 'src/common/decorators/cache.decorator';
 import { Roles } from 'src/common/decorators/role.decorator';
 import { UserRoleEnum } from 'src/common/enums/user.enum';
 import { RolesGuard } from '../../auth/guards/role.guard';
-import { PaginationDto } from '../../repository/dto/repository.dto';
 
 @NoCache()
 @UseGuards(RolesGuard)
@@ -39,8 +37,8 @@ export class AdminPickupController {
     return await this.adminPickupService.assignRecyclingPoint(_id);
   }
 
-  @Get()
-  async PickupRequest(@Query() query?: PaginationDto) {
-    return await this.adminPickupService.getAllPickupRequestsStatus(query);
-  }
+  // @Get()
+  // async PickupRequest(@Query() query?: PaginationDto) {
+  //   return await this.adminPickupService.getAllPickupRequestsStatus(query);
+  // }
 }
