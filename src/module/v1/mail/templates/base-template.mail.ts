@@ -8,8 +8,8 @@ export const baseTemplate = ({
   content: string;
 }) => {
   const appName = EMAIL_CONSTANT.appName;
-  const supportEmail = 'hello@boifiok.ng';
-  const address = 'Plot 6, Unit C, Ewet Housing Estate, Uyo';
+  const supportEmail = 'hello@greenBounty.ng';
+  const address = 'Uyo, Nigeria';
 
   return `
  <!DOCTYPE html>
@@ -137,12 +137,12 @@ export const baseTemplate = ({
       <table align="center" width="100%" cellpadding="0" cellspacing="0">
         <tr>
           <td align="center" style="padding: 40px 16px 24px 16px">
-            <img
-              src="https://boifiok-aws-bucket.s3.eu-north-1.amazonaws.com/uploads/app-files/07ddc871-acc5-4b7e-96c4-84eb8627b104.png"
-              alt="Logo"
-              width="74"
-              style="width: 74px"
-            />
+            // <img
+            //   src="https://boifiok-aws-bucket.s3.eu-north-1.amazonaws.com/uploads/app-files/07ddc871-acc5-4b7e-96c4-84eb8627b104.png"
+            //   alt="Logo"
+            //   width="74"
+            //   style="width: 74px"
+            // />
           </td>
         </tr>
       </table>
@@ -157,7 +157,7 @@ export const baseTemplate = ({
       >
         <tr>
           <td align="center" class="content">
-            <h1 class="title">You don join di waitlist</h1>
+            <h1 class="title">You now have a premium Basket!!</h1>
           </td>
         </tr>
       </table>

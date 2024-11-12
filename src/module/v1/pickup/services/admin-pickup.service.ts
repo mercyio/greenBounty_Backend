@@ -106,6 +106,22 @@ export class AdminPickupService {
     });
   }
 
+  async getAllPickupRequestsStatus(
+    query: PaginationDto,
+    status?: PickupStatusEnum,
+  ) {
+    const filterOptions = {
+      isDeleted: { $ne: true },
+      ...(status && { status }),
+    };
+
+    return await this.repositoryService.paginate({
+      model: this.pickupModel,
+      query,
+      options: filterOptions,
+    });
+  }
+
   async createPickupHistory(userId: string, pickupId: string) {
     const pickup = await this.findPickupById(pickupId);
 
