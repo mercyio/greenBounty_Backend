@@ -23,6 +23,12 @@ https://np8nf7br-4999.uks1.devtunnels.ms/api/paystack/process/hook/internal
 
 https://3ec3-105-112-102-183.ngrok-free.app/api/paystack/process/hook/internal
 
+
+https://wh6wxt6b-5575.uks1.devtunnels.ms/api/paystack/process/hook/internal
+
+https://92e4-105-113-41-158.ngrok-free.app/api/paystack/process/hook/internal
+
+
 purchasing basket
 1. if user selects standard basket , upgrade basket in user basket in schema to standard 
 2. if user selects premium, [

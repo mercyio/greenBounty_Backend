@@ -40,7 +40,5 @@ export class AdminPickupController {
   }
 
   @Get()
-  async getAllPendingRequest(@Query() query: PaginationDto) {
-    return await this.adminPickupService.getAllPendingRequest(query);
   }
 }

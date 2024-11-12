@@ -255,10 +255,15 @@ export class BasketService extends BaseRepositoryService<BasketDocument> {
   }
 
   async getAllBaskets(query: PaginationDto) {
-    return await this.repositoryService.paginate({
+    const result = await this.repositoryService.paginate({
       model: this.basketModel,
       query,
       options: { isDeleted: { $ne: true } },
     });
+
+    return {
+      ...result,
+      data: await this.basketModel.populate(result.data, 'user'),
+    };
   }
 }

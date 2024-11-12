@@ -6,6 +6,12 @@ import { UserDocument } from '../../user/schemas/user.schema';
 import { CreatePickupDto } from '../dto/pickup.dto';
 import { Pickup, PickupDocument } from '../schema/pickup.schema';
 import { RecycleItemService } from '../../recycle/recycle.service';
+import { PaginationDto } from '../../repository/dto/repository.dto';
+import { RepositoryService } from '../../repository/repository.service';
+import {
+  PickupHistory,
+  PickupHistoryDocument,
+} from '../schema/pickup-hystory.schema';
 
 @Injectable()
 export class UserPickupService {
@@ -13,9 +19,12 @@ export class UserPickupService {
     @InjectModel(Pickup.name)
     private pickupModel: Model<PickupDocument>,
     private recycleItemService: RecycleItemService,
+    @InjectModel(PickupHistory.name)
+    private pickupHistoryModel: Model<PickupHistoryDocument>,
+    private repositoryService: RepositoryService,
   ) {}
 
-  async request(user: UserDocument, payload: CreatePickupDto) {
+  async createRequest(user: UserDocument, payload: CreatePickupDto) {
     const { pickupDate } = payload;
 
     const pendingRequest = await this.pickupModel.exists({
@@ -51,11 +60,19 @@ export class UserPickupService {
     });
   }
 
-  async getUserPendingRequest(user: UserDocument) {
+  async PendingRequest(user: UserDocument) {
     return await this.pickupModel.findOne({
       user: user._id,
       status: PickupStatusEnum.Pending,
       isDeleted: { $ne: true },
+    });
+  }
+
+  async PickupHistory(user: UserDocument, query?: PaginationDto) {
+    return await this.repositoryService.paginate({
+      model: this.pickupHistoryModel,
+      query,
+      options: { user: user._id },
     });
   }
 }

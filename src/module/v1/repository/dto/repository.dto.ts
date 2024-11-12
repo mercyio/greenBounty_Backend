@@ -17,4 +17,8 @@ export class PaginationDto {
   @IsOptional()
   @IsString()
   searchQuery?: string;
+
+  // @IsOptional()
+  // @IsEnum(PickupStatusEnum)
+  // status?: PickupStatusEnum;
 }
