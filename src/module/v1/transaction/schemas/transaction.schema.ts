@@ -34,7 +34,7 @@ export class Transaction {
   description: string;
 
   @Prop({ default: 0, select: false })
-  settlement: number; // this is platform fee
+  settlement: number;
 
   @Prop()
   totalAmount: number;
