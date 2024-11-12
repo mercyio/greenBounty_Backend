@@ -62,8 +62,6 @@ export class BasketService extends BaseRepositoryService<BasketDocument> {
       throw new BadRequestException('User already has premium subscription');
     }
 
-    const basket = await this.getUserBasket(userId);
-
     // Create or find a pending transaction for the premium upgrade
     let transaction = await this.transactionService.findOneQuery({
       options: {
@@ -76,7 +74,7 @@ export class BasketService extends BaseRepositoryService<BasketDocument> {
     if (!transaction) {
       transaction = await this.transactionService.create({
         user: userId,
-        basket: basket._id.toString(),
+        basket: user._id.toString(),
         status: TransactionStatusEnum.Pending,
         totalAmount: 1000,
         type: TransactionTypeEnum.PremiumBasket,
@@ -94,11 +92,11 @@ export class BasketService extends BaseRepositoryService<BasketDocument> {
     session.startTransaction();
 
     try {
-      await this.transactionService.updateQuery(
-        { _id: transaction._id },
-        { status: TransactionStatusEnum.Completed },
-        session,
-      );
+      // await this.transactionService.updateQuery(
+      //   { _id: transaction._id },
+      //   { status: TransactionStatusEnum.Completed },
+      //   session,
+      // );
 
       const existingBasket = await this.basketModel.findOne({ user: user._id });
 
@@ -122,6 +120,17 @@ export class BasketService extends BaseRepositoryService<BasketDocument> {
         }),
       ]);
 
+      const basket = await this.getUserBasket(userId);
+
+      await this.transactionService.updateQuery(
+        { _id: transaction._id },
+        {
+          status: TransactionStatusEnum.Completed,
+          basket: basket._id.toString(),
+        },
+        session,
+      );
+
       await session.commitTransaction();
       sessionCommitted = true;
 
@@ -131,8 +140,8 @@ export class BasketService extends BaseRepositoryService<BasketDocument> {
           user.email,
           'Premium Upgrade Successful',
           premiumBasketNotificationEmailTemplate({
-            user: user.email.split('@'),
-            basketNumber: userId,
+            user: [user.email.split('@')[0]],
+            basketNumber: basket._id.toString(),
             upgradeDate: new Date().toLocaleDateString(),
             totalAmount: amountPaid / 1000,
             currencySymbol: '₦',
@@ -142,14 +151,16 @@ export class BasketService extends BaseRepositoryService<BasketDocument> {
           'greenBounty@gmail.com',
           'New Premium Subscription',
           premiumBasketNotificationEmailTemplate({
-            user: user.email.split('@'),
-            basketNumber: userId,
+            user: [user.email.split('@')[0]],
+            basketNumber: basket._id.toString(),
             upgradeDate: new Date().toLocaleDateString(),
             totalAmount: amountPaid / 1000,
             currencySymbol: '₦',
           }),
         ),
       ]);
+
+      return transaction;
     } catch (error) {
       if (!sessionCommitted) {
         await session.abortTransaction();

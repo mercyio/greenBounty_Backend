@@ -24,7 +24,7 @@ export class TransactionService extends BaseRepositoryService<TransactionDocumen
   async getTransactionByReference(
     reference: string,
   ): Promise<TransactionDocument | null> {
-    return this.transactionModel.findOne({ reference });
+    return this.transactionModel.findOne({ _id: reference });
   }
 
   async create(
