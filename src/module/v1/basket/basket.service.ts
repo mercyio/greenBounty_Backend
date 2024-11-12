@@ -74,6 +74,7 @@ export class BasketService extends BaseRepositoryService<BasketDocument> {
     if (!transaction) {
       transaction = await this.transactionService.create({
         user: userId,
+        basket: user._id.toString(),
         status: TransactionStatusEnum.Pending,
         totalAmount: 1000,
         type: TransactionTypeEnum.PremiumBasket,
