@@ -74,7 +74,7 @@ export class BasketService extends BaseRepositoryService<BasketDocument> {
         user: userId,
         basket: basket._id.toString(),
         status: TransactionStatusEnum.Pending,
-        totalAmount: amountPaid,
+        totalAmount: 1000,
         type: TransactionTypeEnum.PremiumBasket,
         // metadata: paymentObject,
         settlement: 0,
