@@ -152,7 +152,7 @@ export const baseTemplate = ({
       >
         <tr>
           <td align="center" class="content">
-            <h1 class="title">You're Now a Premium BountyHunter 🌱</h1>
+            <h1 class="title">Premium BountyHunter 🌱</h1>
           </td>
         </tr>
       </table>
