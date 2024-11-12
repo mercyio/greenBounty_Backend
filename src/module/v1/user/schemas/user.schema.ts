@@ -22,7 +22,7 @@ export class User {
   @Prop({ enum: UserRoleEnum, default: UserRoleEnum.USER })
   role: UserRoleEnum;
 
-  @Prop({ enum: BasketTypeEnum, default: null })
+  @Prop({ enum: BasketTypeEnum, default: BasketTypeEnum.STANDARD })
   basket: BasketTypeEnum;
 
   @Prop({ default: null, index: true })
