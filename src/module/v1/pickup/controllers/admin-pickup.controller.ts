@@ -36,9 +36,4 @@ export class AdminPickupController {
   async assignRecyclingPoint(@Query() { _id }: IDQueryDto) {
     return await this.adminPickupService.assignRecyclingPoint(_id);
   }
-
-  // @Get()
-  // async PickupRequest(@Query() query?: PaginationDto) {
-  //   return await this.adminPickupService.getAllPickupRequestsStatus(query);
-  // }
 }
