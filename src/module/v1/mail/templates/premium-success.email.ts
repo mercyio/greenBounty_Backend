@@ -29,6 +29,8 @@ export function premiumBasketEmailTemplate(data: IPremiumBasketTemplate) {
   
   <p>If you have any questions, feel free to reach out to our support team.</p>
 
+  <b>Level Up! You're Going Green in Premium Style 🌿</b>
+
   <p>Best regards,<br>Your Company Team</p>
 `;
 
@@ -70,7 +72,7 @@ export function premiumBasketNotificationEmailTemplate(
 
   <p>If you have any questions, feel free to reach out to our support team.</p>
 
-   <p>Best regards,<br>GreenBounty Team</p>
+   <p>Best regards,<br>The GreenBounty Team</p>
 `;
 
   return baseTemplate({

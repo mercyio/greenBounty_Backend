@@ -23,7 +23,7 @@ export function ForgotPasswordTemplate(data: ISendResetPasswordEmailTemplate) {
     <div
       style='float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300'
     >
-      <p>GreenBounty</p>
+      <p>Team GreenBounty Team</p>
     </div>
   </div>
 </div>`;

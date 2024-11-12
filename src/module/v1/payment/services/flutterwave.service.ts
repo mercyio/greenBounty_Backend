@@ -93,7 +93,7 @@ export class FlutterwaveService {
       const event = response?.data;
 
       const constructedPayload = {
-        basketId: event.data.meta.orderId,
+        basketId: event.data.meta.Id,
         reference: event.data.tx_ref,
         paymentObject: event,
         amountPaid: event.data.amount,

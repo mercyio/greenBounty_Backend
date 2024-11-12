@@ -17,7 +17,7 @@ export interface Data {
   currency: string;
   ip_address: string;
   metadata: {
-    orderId?: string;
+    basketId?: string;
     userId?: string;
   };
   log: Log;
