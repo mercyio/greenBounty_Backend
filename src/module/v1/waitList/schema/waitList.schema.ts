@@ -5,7 +5,7 @@ import { Document } from 'mongoose';
 })
 export class WaitList extends Document {
   @Prop({ required: true })
-  fullName: string;
+  name: string;
 
   @Prop({ required: true })
   email: string;

@@ -1,12 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { Payment, PaymentDocument } from '../../payment/schema/payment.schema';
 import { User, UserDocument } from '../../user/schemas/user.schema';
 import {
   TransactionStatusEnum,
   TransactionTypeEnum,
 } from '../../../../common/enums/transaction.enum';
-import { Basket } from '../../basket/schema/basket.schema';
+import { Basket, BasketDocument } from '../../basket/schema/basket.schema';
 import { BaseHelper } from 'src/common/utils/helper.util';
 
 export type TransactionDocument = Transaction & Document;
@@ -19,32 +18,29 @@ export class Transaction {
   })
   user: UserDocument;
 
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: Basket.name,
+  })
+  basket: BasketDocument;
+
   @Prop({ unique: true, required: true })
   reference: string;
 
   @Prop({ enum: TransactionTypeEnum, required: true })
   type: TransactionTypeEnum;
 
-  @Prop({ default: null })
+  @Prop({ default: 'premium basket payment' })
   description: string;
 
   @Prop({ default: 0, select: false })
   settlement: number; // this is platform fee
 
-  @Prop({
-    type: mongoose.Schema.Types.ObjectId,
-    ref: Basket.name,
-  })
-  premium: Basket;
-
   @Prop()
   totalAmount: number;
 
-  @Prop({
-    type: mongoose.Schema.Types.ObjectId,
-    ref: Payment.name,
-  })
-  paymentMethod: PaymentDocument;
+  @Prop()
+  paymentMethod: string;
 
   @Prop({ enum: TransactionStatusEnum, default: TransactionStatusEnum.Pending })
   status: TransactionStatusEnum;
@@ -64,11 +60,11 @@ TransactionSchema.pre('validate', function (next) {
 });
 
 TransactionSchema.pre(['find', 'findOne'], function (next) {
-  this.populate('user order paymentMethod');
+  this.populate('user basket paymentMethod');
   next();
 });
 
 TransactionSchema.pre('findOne', function (next) {
-  this.populate('user order paymentMethod');
+  this.populate('user basket paymentMethod');
   next();
 });

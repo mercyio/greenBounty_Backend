@@ -58,11 +58,13 @@ export class BasketService extends BaseRepositoryService<BasketDocument> {
       throw new BadRequestException('User already has premium subscription');
     }
 
+    const basket = await this.getUserBasket(userId);
+
     // Create or find a pending transaction for the premium upgrade
     let transaction = await this.transactionService.findOneQuery({
       options: {
         user: userId,
-        type: TransactionTypeEnum.Premium,
+        type: TransactionTypeEnum.PremiumBasket,
         status: TransactionStatusEnum.Pending,
       },
     });
@@ -70,11 +72,13 @@ export class BasketService extends BaseRepositoryService<BasketDocument> {
     if (!transaction) {
       transaction = await this.transactionService.create({
         user: userId,
+        basket: basket._id.toString(),
         status: TransactionStatusEnum.Pending,
         totalAmount: amountPaid,
-        type: TransactionTypeEnum.Premium,
+        type: TransactionTypeEnum.PremiumBasket,
         // metadata: paymentObject,
         settlement: 0,
+        paymentMethod: 'paystack',
       });
       if (!transaction) {
         return;

@@ -11,7 +11,7 @@ export enum PaymentStatusEnum {
 }
 
 export enum TransactionTypeEnum {
-  Premium = 'Premium',
+  PremiumBasket = 'PremiumBasket',
 }
 
 export enum PickupStatusEnum {
