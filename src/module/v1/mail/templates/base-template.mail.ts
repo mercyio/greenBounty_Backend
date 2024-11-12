@@ -137,12 +137,7 @@ export const baseTemplate = ({
       <table align="center" width="100%" cellpadding="0" cellspacing="0">
         <tr>
           <td align="center" style="padding: 40px 16px 24px 16px">
-            // <img
-            //   src="https://boifiok-aws-bucket.s3.eu-north-1.amazonaws.com/uploads/app-files/07ddc871-acc5-4b7e-96c4-84eb8627b104.png"
-            //   alt="Logo"
-            //   width="74"
-            //   style="width: 74px"
-            // />
+         
           </td>
         </tr>
       </table>
@@ -165,12 +160,7 @@ export const baseTemplate = ({
       <table align="center" width="100%" cellpadding="0" cellspacing="0">
         <tr>
           <td align="center" class="content">
-            <img
-              src="https://e.hypermatic.com/56fe21b30c7461753d912b5905cbbefb.jpg"
-              alt="Main Image"
-              class="responsive-img"
-              width="504"
-            />
+          
           </td>
         </tr>
       </table>
@@ -189,9 +179,9 @@ export const baseTemplate = ({
       >
         <tr>
           <td align="center" class="content">
-            <p class="footer-text">You get questions?</p>
+            <p class="footer-text">Do you have questions?</p>
             <p class="footer-text">
-              You fit reply this email or you contact
+              You can reply this email or you contact
               <a href="mailto:${supportEmail}">${supportEmail}</a>
             </p>
             <p class="footer-text">Warm regards,</p>
