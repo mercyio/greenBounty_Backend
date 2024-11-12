@@ -106,19 +106,11 @@ export class AdminPickupService {
     });
   }
 
-  async getAllPickupRequestsStatus(
-    query: PaginationDto,
-    status?: PickupStatusEnum,
-  ) {
-    const filterOptions = {
-      isDeleted: { $ne: true },
-      ...(status && { status }),
-    };
-
+  async getAllPickupRequestsStatus(query: PaginationDto) {
     return await this.repositoryService.paginate({
       model: this.pickupModel,
       query,
-      options: filterOptions,
+      options: { isDeleted: { $ne: true } },
     });
   }
 

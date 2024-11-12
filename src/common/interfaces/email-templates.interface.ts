@@ -14,7 +14,7 @@ export interface IVerifyEmailTemplate {
 export type ISendResetPasswordEmailTemplate = IVerifyEmailTemplate;
 
 export interface IPremiumBasketTemplate {
-  user: string;
+  user: string[];
   basketNumber: string;
   upgradeDate: string;
   // items: Array<{
@@ -36,7 +36,7 @@ export interface IPremiumBasketTemplate {
 }
 
 export interface IPremiumBasketNotificationTemplate {
-  user: string;
+  user: string[];
   basketNumber: string;
   upgradeDate: string;
   // items: Array<{
