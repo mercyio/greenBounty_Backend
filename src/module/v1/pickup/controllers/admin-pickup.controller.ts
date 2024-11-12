@@ -40,7 +40,5 @@ export class AdminPickupController {
   }
 
   @Get()
-  async PickupRequest(@Query() query?: PaginationDto) {
-    return await this.adminPickupService.getAllPickupRequestsStatus(query);
   }
 }
