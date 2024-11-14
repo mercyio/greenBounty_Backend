@@ -64,6 +64,7 @@ export class AdminWithdrawalService {
             status: TransactionStatusEnum.Completed,
             approvedBy: admin._id.toString(),
             approvedAt: new Date(),
+            description: transaction.description,
             totalAmount: transaction.totalAmount,
           },
           session,

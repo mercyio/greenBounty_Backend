@@ -64,7 +64,7 @@ export class UserWithdrawalService {
       withdrawalAccount: account,
       status: TransactionStatusEnum.Pending,
       totalAmount: amount,
-      discription: description,
+      description: description,
       type: TransactionTypeEnum.Withdrawal,
       paymentMethod: 'bank_transfer',
       metadata: {
