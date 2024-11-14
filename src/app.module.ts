@@ -13,6 +13,7 @@ import { WithdrawalAccountModule } from './module/v1/withdrawal-account/withdraw
 import { RecycleItemModule } from './module/v1/recycle/recycle.module';
 import { PickupModule } from './module/v1/pickup/pickup.module';
 import { WithdrawalModule } from './module/v1/withdrawal/withdrawal.module';
+import { RewardChartModule } from './module/v1/reward-chart/reward-chart.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { WithdrawalModule } from './module/v1/withdrawal/withdrawal.module';
     RecycleItemModule,
     PickupModule,
     WithdrawalModule,
+    RewardChartModule,
   ],
   controllers: [],
   providers: [],
