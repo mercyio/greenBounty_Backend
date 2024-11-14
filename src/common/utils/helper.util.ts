@@ -4,6 +4,7 @@ import { ENVIRONMENT } from '../configs/environment';
 import { BadRequestException } from '@nestjs/common';
 // import { nanoid } from 'nanoid';
 import { CacheHelper } from './redis.util';
+import { ITEM_WEIGHTS } from '../enums/recycle.enum';
 
 const encryptionKeyFromEnv = ENVIRONMENT.APP.ENCRYPTION_KEY;
 
@@ -103,6 +104,19 @@ export class BaseHelper {
     const uniqueId = Math.random().toString(36).substring(2, 8);
     const referralCode = `GB_${formattedName}${uniqueId}`;
     return referralCode;
+  }
+
+  static calculateWeight(item: string, quantity: number) {
+    // Normalize the item name to lowercase
+    const normalizedItem = item.toLowerCase();
+
+    // Check if the item exists in ITEM_WEIGHTS
+    if (ITEM_WEIGHTS.hasOwnProperty(normalizedItem)) {
+      return ITEM_WEIGHTS[normalizedItem] * quantity;
+    } else {
+      // If item doesn't exist, return 0 or throw an error
+      throw new Error(`Item "${item}" is not defined in ITEM_WEIGHTS`);
+    }
   }
 
   // static generateReferralCode(userId: string): string {

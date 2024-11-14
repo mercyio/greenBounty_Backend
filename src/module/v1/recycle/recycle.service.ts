@@ -21,6 +21,8 @@ import {
   RecycleHistory,
   RecycleHistoryDocument,
 } from './schema/recycle-hystory.schema';
+import { BaseHelper } from 'src/common/utils/helper.util';
+// import { BaseHelper } from 'src/common/utils/helper.util';
 
 @Injectable()
 export class RecycleItemService extends BaseRepositoryService<RecycleDocument> {
@@ -55,12 +57,35 @@ export class RecycleItemService extends BaseRepositoryService<RecycleDocument> {
       );
     }
 
-    return await this.recycleModel.create({
+    const weight = BaseHelper.calculateWeight(
+      item.toLocaleLowerCase(),
+      quantity,
+    );
+
+    // Check the total weight limit
+    const currentWeight = basket.itemsWeight || 0;
+    const newTotalWeight = currentWeight + weight;
+
+    // Enforce weight limit for recycling
+    if (newTotalWeight >= 50) {
+      throw new BadRequestException(
+        'Your basket has reached the 50kg limit. Please request a pickup before recycling more items.',
+      );
+    }
+
+    const recycleEntries = {
       user: user._id,
       basket,
       item,
       quantity,
-    });
+      weight,
+    };
+
+    await this.basketService.updateQuery(
+      { user: user._id },
+      { $inc: { itemsWeight: recycleEntries.weight } },
+    );
+    return await this.recycleModel.create(recycleEntries);
   }
 
   async update(user: UserDocument, itemId: string, payload: RecycleItemDto) {
@@ -145,11 +170,16 @@ export class RecycleItemService extends BaseRepositoryService<RecycleDocument> {
       isDeleted: true,
     });
 
-    return await this.recycleHistoryModel.create({
+    const recycleHistory = await this.recycleHistoryModel.create({
       items: item,
       pickupDate: new Date(),
       user: userId,
     });
+
+    return await this.recycleHistoryModel
+      .findById(recycleHistory._id)
+      .populate('items')
+      .populate('user');
   }
 
   async retrieveUserRecycleItemsHistory(
@@ -157,9 +187,9 @@ export class RecycleItemService extends BaseRepositoryService<RecycleDocument> {
     query?: PaginationDto,
   ) {
     return await this.repositoryService.paginate({
-      model: this.recycleHistoryModel,
+      model: this.recycleModel,
       query,
-      options: { user: user._id },
+      options: { user: user._id, isDeleted: { $ne: true } },
     });
   }
 }
