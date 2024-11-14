@@ -20,6 +20,12 @@ export class Transaction {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
+    ref: User.name,
+  })
+  approvedBy?: UserDocument;
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
     ref: Basket.name,
   })
   basket: BasketDocument;
@@ -50,6 +56,9 @@ export class Transaction {
 
   @Prop()
   errorMessage: string;
+
+  @Prop()
+  approvedAt?: Date;
 }
 
 export const TransactionSchema = SchemaFactory.createForClass(Transaction);

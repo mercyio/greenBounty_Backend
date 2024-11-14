@@ -62,10 +62,9 @@ export class AdminWithdrawalService {
           { reference: reference },
           {
             status: TransactionStatusEnum.Completed,
-            approvedBy: admin._id.toString(), // Convert ObjectId to string
+            approvedBy: admin._id.toString(),
             approvedAt: new Date(),
-            settlement: transaction.totalAmount,
-            completedAt: new Date(),
+            totalAmount: transaction.totalAmount,
           },
           session,
         ),
