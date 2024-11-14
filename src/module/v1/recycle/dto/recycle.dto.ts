@@ -6,6 +6,10 @@ export class RecycleItemDto {
   @IsEnum(RecycleItemTypeEnum)
   item: RecycleItemTypeEnum;
 
+  // @IsArray()
+  // @IsString({ each: true })
+  // items: string[];
+
   @IsNumber()
   quantity: number;
 }
