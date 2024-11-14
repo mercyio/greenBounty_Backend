@@ -60,3 +60,5 @@ Both user and admin can track status throughout process
 
 get recycleHystory and pickup recycleHystory
 get a users most recycled items
+
+apex chart

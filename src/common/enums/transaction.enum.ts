@@ -12,6 +12,7 @@ export enum PaymentStatusEnum {
 
 export enum TransactionTypeEnum {
   PremiumBasket = 'PremiumBasket',
+  Withdrawal = 'Withdrawal',
 }
 
 export enum PickupStatusEnum {
@@ -19,4 +20,10 @@ export enum PickupStatusEnum {
   Accepted = 'Accepted',
   Completed = 'Completed',
   Canceled = 'Canceled',
+}
+
+export enum WithdrawalStatusEnum {
+  Pending = 'Pending',
+  Successful = 'Successful',
+  Failed = 'Failed',
 }

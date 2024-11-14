@@ -99,4 +99,14 @@ export class WithdrawalAccountService extends BaseRepositoryService<WithdrawalAc
       );
     }
   }
+
+  async getWithdrawalAccountById(
+    withdrawalAccountId: string,
+    userId: string,
+  ): Promise<WithdrawalAccountDocument | null> {
+    return this.withdrawalAccountModel.findOne({
+      user: userId,
+      _id: withdrawalAccountId,
+    });
+  }
 }

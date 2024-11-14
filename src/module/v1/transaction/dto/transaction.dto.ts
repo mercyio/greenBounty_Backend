@@ -39,6 +39,14 @@ export class CreateTransactionDto {
 
   @IsOptional()
   @IsMongoId()
+  withdrawalAccount?: string;
+
+  @IsOptional()
+  @IsString()
+  discription?: string;
+
+  @IsOptional()
+  @IsMongoId()
   paymentMethod?: string;
 
   @IsOptional()

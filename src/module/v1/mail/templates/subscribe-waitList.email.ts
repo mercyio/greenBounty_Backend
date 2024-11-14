@@ -54,7 +54,7 @@ export function SubscribeToWaitListTemplate(
     <body>
       <div class="header">
         <h1>🌿 Welcome, ${data.name}</h1>
-        <p>You're Now Part of the GreenBounty Hunters Community</p>
+        <p>You're Now Part of the GreenBounty Community</p>
       </div>
       
       <div class="content">
@@ -72,10 +72,7 @@ export function SubscribeToWaitListTemplate(
             <li>Early Bird Bonus Rewards</li>
           </ul>
         </div>
-
-        
       </div>
-
       <div class="footer">
         <p>🌿 Turning Trash into Treasure 🌿</p>
         <p><strong>The GreenBounty Team</strong></p>
