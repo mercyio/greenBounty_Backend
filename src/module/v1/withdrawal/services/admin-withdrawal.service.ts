@@ -56,7 +56,7 @@ export class AdminWithdrawalService {
 
       await Promise.all([
         this.userService.updateUserById(user._id.toString(), {
-          $inc: { wallet: -transaction.totalAmount },
+          $inc: { wallet: -transaction.totalAmount * 10 },
         }),
         this.transactionService.updateSingleQuery(
           { reference: reference },
