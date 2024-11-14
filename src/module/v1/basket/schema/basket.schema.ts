@@ -26,6 +26,9 @@ export class Basket {
   @Prop({ enum: BasketTypeEnum })
   plan: BasketTypeEnum;
 
+  @Prop({ default: 0 })
+  itemsWeight: number;
+
   @Prop({ default: false })
   isDeleted: boolean;
 
