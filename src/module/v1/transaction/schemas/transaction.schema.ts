@@ -30,7 +30,7 @@ export class Transaction {
   @Prop({ enum: TransactionTypeEnum, required: true })
   type: TransactionTypeEnum;
 
-  @Prop({ default: 'premium basket payment' })
+  @Prop()
   description: string;
 
   @Prop({ default: 0, select: false })

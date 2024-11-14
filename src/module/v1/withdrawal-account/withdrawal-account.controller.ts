@@ -19,7 +19,7 @@ import { LoggedInUserDecorator } from 'src/common/decorators/logged_in_user.deco
 import { IDQueryDto } from 'src/common/dto/query.dto';
 
 @NoCache()
-@Controller('user/withdrawer')
+@Controller('user/withdrawer-account')
 export class WithdrawalAccountController {
   constructor(
     private readonly withdrawalAccountService: WithdrawalAccountService,
