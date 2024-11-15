@@ -39,8 +39,13 @@ export class BasketController {
 
   @UseGuards(RolesGuard)
   @Roles(UserRoleEnum.SUPER_ADMIN, UserRoleEnum.ADMIN)
-  @Get()
+  @Get('all')
   async getAllBaskets(@Query() query: PaginationDto) {
     return await this.basketService.getAllBaskets(query);
+  }
+
+  @Get()
+  async getUserBasket(@LoggedInUserDecorator() user: UserDocument) {
+    return await this.basketService.getUserBasket(user._id.toString());
   }
 }
