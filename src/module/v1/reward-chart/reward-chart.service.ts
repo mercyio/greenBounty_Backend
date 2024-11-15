@@ -20,7 +20,7 @@ export class RewardChartService {
             month: '$month',
             category: {
               $cond: [
-                { $lt: ['$amount', 20] }, // condition 1: amount < 20
+                { $lt: ['$amount', 20] },
                 'below $20',
                 {
                   $cond: [
@@ -29,9 +29,9 @@ export class RewardChartService {
                         { $gte: ['$amount', 20] },
                         { $lte: ['$amount', 50] },
                       ],
-                    }, // condition 2: 20 <= amount <= 50
+                    },
                     '$20-$50',
-                    'above $50', // else: amount > 50
+                    'above $50',
                   ],
                 },
               ],
