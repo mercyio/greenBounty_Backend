@@ -57,6 +57,18 @@ export class RecycleItemService extends BaseRepositoryService<RecycleDocument> {
       );
     }
 
+    // Check if the user already has this item in their basket
+    const existingItem = await this.recycleModel.findOne({
+      user: user._id,
+      item: item,
+    });
+
+    if (existingItem) {
+      throw new BadRequestException(
+        `You already have ${item.toLowerCase()} in your basket. Please update the quantity instead of adding it again.`,
+      );
+    }
+
     const weight = BaseHelper.calculateWeight(
       item.toLocaleLowerCase(),
       quantity,
@@ -73,6 +85,11 @@ export class RecycleItemService extends BaseRepositoryService<RecycleDocument> {
       );
     }
 
+    await this.basketService.updateQuery(
+      { user: user._id },
+      { $inc: { itemsWeight: weight } },
+    );
+
     const recycleEntries = {
       user: user._id,
       basket,
@@ -81,10 +98,6 @@ export class RecycleItemService extends BaseRepositoryService<RecycleDocument> {
       weight,
     };
 
-    await this.basketService.updateQuery(
-      { user: user._id },
-      { $inc: { itemsWeight: recycleEntries.weight } },
-    );
     return await this.recycleModel.create(recycleEntries);
   }
 
