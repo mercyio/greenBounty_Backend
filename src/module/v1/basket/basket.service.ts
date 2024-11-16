@@ -271,7 +271,7 @@ export class BasketService extends BaseRepositoryService<BasketDocument> {
   }
 
   async getUserBasket(userId: string) {
-    return this.basketModel.findById({ user: userId });
+    return this.basketModel.findOne({ user: userId });
   }
 
   async getAllBaskets(query: PaginationDto) {
