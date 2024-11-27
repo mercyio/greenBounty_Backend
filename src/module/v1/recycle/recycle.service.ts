@@ -118,12 +118,23 @@ export class RecycleItemService extends BaseRepositoryService<RecycleDocument> {
       );
     }
 
+    const weight = BaseHelper.calculateWeight(
+      item.toLocaleLowerCase(),
+      quantity,
+    );
+
+    await this.basketService.updateQuery(
+      { user: user._id },
+      { $inc: { itemsWeight: weight } },
+    );
+
     return await this.recycleModel.findOneAndUpdate(
       { _id: itemId, user: user._id },
       {
         basket,
         item,
         quantity,
+        weight,
       },
       { new: true },
     );
