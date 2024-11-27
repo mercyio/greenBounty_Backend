@@ -3,6 +3,8 @@ import mongoose, { Document } from 'mongoose';
 import { Recycle } from '../../recycle/schema/recycle.schema';
 import { User, UserDocument } from '../../user/schemas/user.schema';
 import { PickupStatusEnum } from 'src/common/enums/transaction.enum';
+import { ItemConditionEnum } from 'src/common/enums/pickup.enum';
+import { RecycleItemTypeEnum } from 'src/common/enums/recycle.enum';
 
 export type PickupDocument = Pickup & Document;
 
@@ -15,26 +17,38 @@ export class Pickup {
   })
   user: UserDocument;
 
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: Recycle.name }] })
-  recycleItems: Recycle[];
+  @Prop()
+  name: string;
 
-  @Prop({ enum: PickupStatusEnum })
-  status: PickupStatusEnum;
+  @Prop()
+  pickupAddress: string;
 
   @Prop()
   pickupDate: Date;
 
   @Prop()
-  pickupAddress: string;
+  weight: number;
+
+  @Prop({ enum: RecycleItemTypeEnum })
+  wasteType: RecycleItemTypeEnum;
+
+  @Prop({ enum: ItemConditionEnum })
+  itemCondition: ItemConditionEnum;
+
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: Recycle.name }] })
+  recycleItems: Recycle[];
+
+  @Prop()
+  note?: string;
+
+  @Prop({ enum: PickupStatusEnum })
+  status: PickupStatusEnum;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: User.name,
   })
   assignedRecycler: UserDocument;
-
-  @Prop()
-  note?: string;
 
   @Prop({ default: false })
   isRewarded: boolean;
