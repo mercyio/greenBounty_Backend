@@ -8,7 +8,6 @@ import {
   IsString,
 } from 'class-validator';
 import { ItemConditionEnum } from 'src/common/enums/pickup.enum';
-import { RecycleItemTypeEnum } from 'src/common/enums/recycle.enum';
 
 export class CreatePickupDto {
   @IsNotEmpty()
@@ -32,8 +31,8 @@ export class CreatePickupDto {
   itemCondition: ItemConditionEnum[];
 
   @IsNotEmpty()
-  @IsEnum(RecycleItemTypeEnum)
-  wasteType: RecycleItemTypeEnum[];
+  @IsEnum(['Bottle', 'Paper', 'Nylon', 'Can', 'Metal', 'Iron'], { each: true })
+  wasteType: ('Bottle' | 'Paper' | 'Nylon' | 'Can' | 'Metal' | 'Iron')[];
 
   @IsString()
   @IsOptional()
