@@ -79,7 +79,7 @@ export class RecycleItemService extends BaseRepositoryService<RecycleDocument> {
     const newTotalWeight = currentWeight + weight;
 
     // Enforce weight limit for recycling
-    if (newTotalWeight >= 50) {
+    if (newTotalWeight > 51) {
       throw new BadRequestException(
         'Your basket has reached the 50kg limit. Please request a pickup before recycling more items.',
       );
@@ -164,12 +164,11 @@ export class RecycleItemService extends BaseRepositoryService<RecycleDocument> {
   }
 
   async findItemsByUserId(userId: string) {
-    const items = await this.recycleModel
-      .find({
-        user: userId,
-        isDeleted: { $ne: true },
-      })
-      .populate('user');
+    const items = await this.recycleModel.find({
+      user: userId,
+      isDeleted: { $ne: true },
+    });
+    // .populate('user');
 
     if (!items) {
       throw new BadRequestException('invalid pickup request');

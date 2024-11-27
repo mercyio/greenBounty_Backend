@@ -117,12 +117,8 @@ export class AdminPickupService {
   async createPickupHistory(userId: string, pickupId: string) {
     const pickup = await this.findPickupById(pickupId);
 
-    return await this.pickupHistoryModel.create({
-      pickup: pickup._id,
-      recycleItems: pickup.recycleItems,
-      pickupDate: pickup.pickupDate,
-      pickupAddress: pickup.pickupAddress,
-      user: userId,
-    });
+    return (await this.pickupHistoryModel.create(pickup)).populate(
+      'user pickup',
+    );
   }
 }
