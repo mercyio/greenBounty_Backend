@@ -38,3 +38,13 @@ cd greenbounty/backend
 npm install
 npm run start:dev
 
+```
+
+🔭 What's Coming Next?
+🌍 Global leaderboard of top recyclers
+
+💬 Social sharing for milestones
+
+🛍️ In-app marketplace to spend points
+
+🚛 Logistic partnerships for home pickups
