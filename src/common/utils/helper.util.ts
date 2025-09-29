@@ -1,5 +1,5 @@
 import { randomBytes, createCipheriv, createDecipheriv } from 'crypto';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { ENVIRONMENT } from '../configs/environment';
 import { BadRequestException } from '@nestjs/common';
 // import { nanoid } from 'nanoid';
