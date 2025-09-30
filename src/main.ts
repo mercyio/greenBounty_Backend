@@ -7,7 +7,7 @@ import { HttpExceptionFilter } from './common/filter/filter';
 import { ENVIRONMENT } from './common/configs/environment';
 import { ResponseTransformerInterceptor } from './common/interceptors/response.interceptor';
 
-const serverPort = ENVIRONMENT.APP.PORT || 3000;
+const serverPort = process.env.APP_PORT|| 3000;
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
