@@ -7,8 +7,8 @@ import { UserDocument } from '../user/schemas/user.schema';
 export class RewardChartController {
   constructor(private rewardChartService: RewardChartService) {}
 
-  @Get()
-  async getMonthlyRewards(@LoggedInUserDecorator() user: UserDocument) {
-    return this.rewardChartService.getMonthlyRewards(user);
-  }
+  // @Get()
+  // async getMonthlyRewards(@LoggedInUserDecorator() user: UserDocument) {
+  //   return this.rewardChartService.getMonthlyRewards(user);
+  // }
 }

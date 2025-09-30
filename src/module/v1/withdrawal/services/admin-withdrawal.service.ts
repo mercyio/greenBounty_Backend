@@ -27,72 +27,72 @@ export class AdminWithdrawalService {
     private mailService: MailService,
   ) {}
 
-  async markWithdrawalAsSuccessful(admin: UserDocument, reference: string) {
-    const session = await this.transactionModel.db.startSession();
-    session.startTransaction();
-    let sessionCommitted = false;
+  //   async markWithdrawalAsSuccessful(admin: UserDocument, reference: string) {
+  //     const session = await this.transactionModel.db.startSession();
+  //     session.startTransaction();
+  //     let sessionCommitted = false;
 
-    try {
-      const transaction =
-        await this.transactionService.getTransactionByReference(reference);
-      if (!transaction) {
-        throw new NotFoundException('Transaction not found');
-      }
+  //     try {
+  //       const transaction =
+  //         await this.transactionService.getTransactionByReference(reference);
+  //       if (!transaction) {
+  //         throw new NotFoundException('Transaction not found');
+  //       }
 
-      const user = await this.userService.findOneById(
-        transaction.user._id.toString(),
-      );
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
+  //       const user = await this.userService.findOneById(
+  //         transaction.user._id.toString(),
+  //       );
+  //       if (!user) {
+  //         throw new NotFoundException('User not found');
+  //       }
 
-      if (transaction.status !== TransactionStatusEnum.Pending) {
-        throw new BadRequestException('Transaction is not in pending state');
-      }
+  //       if (transaction.status !== TransactionStatusEnum.Pending) {
+  //         throw new BadRequestException('Transaction is not in pending state');
+  //       }
 
-      if (user.wallet < transaction.totalAmount) {
-        throw new BadRequestException('Insufficient balance');
-      }
+  //       if (user.wallet < transaction.totalAmount) {
+  //         throw new BadRequestException('Insufficient balance');
+  //       }
 
-      await Promise.all([
-        this.userService.updateUserById(user._id.toString(), {
-          $inc: { wallet: -transaction.totalAmount * 10 },
-        }),
-        this.transactionService.updateSingleQuery(
-          { reference: reference },
-          {
-            status: TransactionStatusEnum.Completed,
-            approvedBy: admin._id.toString(),
-            approvedAt: new Date(),
-            description: transaction.description,
-            totalAmount: transaction.totalAmount,
-          },
-          session,
-        ),
-      ]);
+  //       await Promise.all([
+  //         this.userService.updateUserById(user._id.toString(), {
+  //           $inc: { wallet: -transaction.totalAmount * 10 },
+  //         }),
+  //         this.transactionService.updateSingleQuery(
+  //           { reference: reference },
+  //           {
+  //             status: TransactionStatusEnum.Completed,
+  //             approvedBy: admin._id.toString(),
+  //             approvedAt: new Date(),
+  //             description: transaction.description,
+  //             totalAmount: transaction.totalAmount,
+  //           },
+  //           session,
+  //         ),
+  //       ]);
 
-      await session.commitTransaction();
-      sessionCommitted = true;
+  //       await session.commitTransaction();
+  //       sessionCommitted = true;
 
-      this.mailService
-        .sendEmail(
-          user.email,
-          'Withdrawal Successful',
-          `Your withdrawal of ${transaction.totalAmount} has been processed successfully`,
-        )
-        .catch(console.error);
+  //       this.mailService
+  //         .sendEmail(
+  //           user.email,
+  //           'Withdrawal Successful',
+  //           `Your withdrawal of ${transaction.totalAmount} has been processed successfully`,
+  //         )
+  //         .catch(console.error);
 
-      // Fetch the updated transaction with populated user
-      return await this.transactionModel
-        .findOne({ reference })
-        .populate('user');
-    } catch (error) {
-      if (!sessionCommitted) {
-        await session.abortTransaction();
-      }
-      throw error;
-    } finally {
-      await session.endSession();
-    }
-  }
+  //       // Fetch the updated transaction with populated user
+  //       return await this.transactionModel
+  //         .findOne({ reference })
+  //         .populate('user');
+  //     } catch (error) {
+  //       if (!sessionCommitted) {
+  //         await session.abortTransaction();
+  //       }
+  //       throw error;
+  //     } finally {
+  //       await session.endSession();
+  //     }
+  //   }
 }

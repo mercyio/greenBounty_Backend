@@ -25,27 +25,27 @@ import { PaginationDto } from '../../repository/dto/repository.dto';
 export class AdminPickupController {
   constructor(private adminPickupService: AdminPickupService) {}
 
-  @Patch()
-  @ResponseMessage(RESPONSE_CONSTANT.PICKUP.ASSIGN_RECYCLER_SUCCESS)
-  async assignRecycler(
-    @Query() { _id }: IDQueryDto,
-    @Body() payload: AssignRecyclerDto,
-  ) {
-    return await this.adminPickupService.assignRecycler(_id, payload);
-  }
+  // @Patch()
+  // @ResponseMessage(RESPONSE_CONSTANT.PICKUP.ASSIGN_RECYCLER_SUCCESS)
+  // async assignRecycler(
+  //   @Query() { _id }: IDQueryDto,
+  //   @Body() payload: AssignRecyclerDto,
+  // ) {
+  //   return await this.adminPickupService.assignRecycler(_id, payload);
+  // }
 
-  @Post()
-  async assignRecyclingPoint(@Query() { _id }: IDQueryDto) {
-    return await this.adminPickupService.assignRecyclingPoint(_id);
-  }
+  // @Post()
+  // async assignRecyclingPoint(@Query() { _id }: IDQueryDto) {
+  //   return await this.adminPickupService.assignRecyclingPoint(_id);
+  // }
 
-  @Get()
-  async getAllPendingRequest(@Query() query: PaginationDto) {
-    return await this.adminPickupService.getAllPendingRequest(query);
-  }
+  // @Get()
+  // async getAllPendingRequest(@Query() query: PaginationDto) {
+  //   return await this.adminPickupService.getAllPendingRequest(query);
+  // }
 
-  @Get('all')
-  async getAllPickupRequestsStatus(@Query() query: PaginationDto) {
-    return await this.adminPickupService.getAllPickupRequestsStatus(query);
-  }
+  // @Get('all')
+  // async getAllPickupRequestsStatus(@Query() query: PaginationDto) {
+  //   return await this.adminPickupService.getAllPickupRequestsStatus(query);
+  // }
 }

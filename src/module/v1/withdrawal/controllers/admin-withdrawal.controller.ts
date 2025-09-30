@@ -12,14 +12,14 @@ import { UserDocument } from '../../user/schemas/user.schema';
 export class AdminWithdrawalController {
   constructor(private adminWithdrawalService: AdminWithdrawalService) {}
 
-  @Post()
-  async markWithdrawalAsSuccessful(
-    @LoggedInUserDecorator() admin: UserDocument,
-    @Query('reference') reference: string,
-  ) {
-    return this.adminWithdrawalService.markWithdrawalAsSuccessful(
-      admin,
-      reference,
-    );
-  }
+  //   @Post()
+  //   async markWithdrawalAsSuccessful(
+  //     @LoggedInUserDecorator() admin: UserDocument,
+  //     @Query('reference') reference: string,
+  //   ) {
+  //     return this.adminWithdrawalService.markWithdrawalAsSuccessful(
+  //       admin,
+  //       reference,
+  //     );
+  //   }
 }

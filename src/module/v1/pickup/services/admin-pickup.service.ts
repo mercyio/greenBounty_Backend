@@ -26,99 +26,99 @@ export class AdminPickupService {
     private settingService: SettingsService,
   ) {}
 
-  async assignRecycler(pickupId: string, payload: AssignRecyclerDto) {
-    const { recycler } = payload;
+  //   async assignRecycler(pickupId: string, payload: AssignRecyclerDto) {
+  //     const { recycler } = payload;
 
-    const pickup = await this.findPickupById(pickupId);
+  //     const pickup = await this.findPickupById(pickupId);
 
-    if (pickup.status !== PickupStatusEnum.Pending) {
-      throw new BadRequestException('Pickup request is not in pending state');
-    }
+  //     if (pickup.status !== PickupStatusEnum.Pending) {
+  //       throw new BadRequestException('Pickup request is not in pending state');
+  //     }
 
-    return await this.pickupModel.findByIdAndUpdate(
-      pickupId,
-      {
-        assignedRecycler: recycler,
-        status: PickupStatusEnum.Accepted,
-        acceptedAt: new Date(),
-      },
-      { new: true },
-    );
-  }
+  //     return await this.pickupModel.findByIdAndUpdate(
+  //       pickupId,
+  //       {
+  //         assignedRecycler: recycler,
+  //         status: PickupStatusEnum.Accepted,
+  //         acceptedAt: new Date(),
+  //       },
+  //       { new: true },
+  //     );
+  //   }
 
-  async assignRecyclingPoint(pickupId: string) {
-    const pickup = await this.findPickupById(pickupId);
+  //   async assignRecyclingPoint(pickupId: string) {
+  //     const pickup = await this.findPickupById(pickupId);
 
-    if (pickup.status !== PickupStatusEnum.Accepted) {
-      throw new BadRequestException(
-        'Pickup request must be accepted before completion',
-      );
-    }
+  //     if (pickup.status !== PickupStatusEnum.Accepted) {
+  //       throw new BadRequestException(
+  //         'Pickup request must be accepted before completion',
+  //       );
+  //     }
 
-    const { standardBasketRecyclingPoint, premiumBasketRecyclingPoint } =
-      await this.settingService.getSettings();
+  //     const { standardBasketRecyclingPoint, premiumBasketRecyclingPoint } =
+  //       await this.settingService.getSettings();
 
-    const points =
-      pickup.user.basket === BasketTypeEnum.STANDARD
-        ? standardBasketRecyclingPoint
-        : premiumBasketRecyclingPoint;
+  //     const points =
+  //       pickup.user.basket === BasketTypeEnum.STANDARD
+  //         ? standardBasketRecyclingPoint
+  //         : premiumBasketRecyclingPoint;
 
-    // Update user's wallet with points
-    const [result] = await Promise.all([
-      this.pickupModel.findByIdAndUpdate(
-        pickupId,
-        {
-          status: PickupStatusEnum.Completed,
-          isRewarded: true,
-          rewardedAt: new Date(),
-          pointsAwarded: points,
-        },
-        { new: true },
-      ),
-      this.userService.updateUserById(pickup.user._id.toString(), {
-        $inc: { wallet: points },
-      }),
-      await this.createPickupHistory(pickup.user._id.toString(), pickupId),
-    ]);
+  //     // Update user's wallet with points
+  //     const [result] = await Promise.all([
+  //       this.pickupModel.findByIdAndUpdate(
+  //         pickupId,
+  //         {
+  //           status: PickupStatusEnum.Completed,
+  //           isRewarded: true,
+  //           rewardedAt: new Date(),
+  //           pointsAwarded: points,
+  //         },
+  //         { new: true },
+  //       ),
+  //       this.userService.updateUserById(pickup.user._id.toString(), {
+  //         $inc: { wallet: points },
+  //       }),
+  //       await this.createPickupHistory(pickup.user._id.toString(), pickupId),
+  //     ]);
 
-    return result;
-  }
+  //     return result;
+  //   }
 
-  async findPickupById(pickupId: string) {
-    const pickup = await this.pickupModel
-      .findOne({
-        _id: pickupId,
-        isDeleted: { $ne: true },
-      })
-      .populate('user', 'basket');
+  //   async findPickupById(pickupId: string) {
+  //     const pickup = await this.pickupModel
+  //       .findOne({
+  //         _id: pickupId,
+  //         isDeleted: { $ne: true },
+  //       })
+  //       .populate('user', 'basket');
 
-    if (!pickup) {
-      throw new BadRequestException('invalid pickup request');
-    }
-    return pickup;
-  }
+  //     if (!pickup) {
+  //       throw new BadRequestException('invalid pickup request');
+  //     }
+  //     return pickup;
+  //   }
 
-  async getAllPendingRequest(query: PaginationDto) {
-    return await this.repositoryService.paginate({
-      model: this.pickupModel,
-      query,
-      options: { status: PickupStatusEnum.Pending, isDeleted: { $ne: true } },
-    });
-  }
+  //   async getAllPendingRequest(query: PaginationDto) {
+  //     return await this.repositoryService.paginate({
+  //       model: this.pickupModel,
+  //       query,
+  //       options: { status: PickupStatusEnum.Pending, isDeleted: { $ne: true } },
+  //     });
+  //   }
 
-  async getAllPickupRequestsStatus(query: PaginationDto) {
-    return await this.repositoryService.paginate({
-      model: this.pickupModel,
-      query,
-      options: { isDeleted: { $ne: true } },
-    });
-  }
+  //   async getAllPickupRequestsStatus(query: PaginationDto) {
+  //     return await this.repositoryService.paginate({
+  //       model: this.pickupModel,
+  //       query,
+  //       options: { isDeleted: { $ne: true } },
+  //     });
+  //   }
 
-  async createPickupHistory(userId: string, pickupId: string) {
-    const pickup = await this.findPickupById(pickupId);
+  //   async createPickupHistory(userId: string, pickupId: string) {
+  //     const pickup = await this.findPickupById(pickupId);
 
-    return (await this.pickupHistoryModel.create(pickup)).populate(
-      'user pickup',
-    );
-  }
+  //     return (await this.pickupHistoryModel.create(pickup)).populate(
+  //       'user pickup',
+  //     );
+  //   }
 }

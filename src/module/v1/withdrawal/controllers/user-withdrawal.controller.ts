@@ -9,21 +9,21 @@ import { UserWithdrawalService } from '../services/user-withdrawal.service';
 export class UserWithdrawalController {
   constructor(private userWithdrawalService: UserWithdrawalService) {}
 
-  @Post()
-  async createWithdrawal(
-    @LoggedInUserDecorator() user: UserDocument,
-    @Body() payload: CreateWithdrawalDto,
-    paymentDetails: any,
-  ) {
-    return this.userWithdrawalService.createWithdrawalRequest(
-      user,
-      payload,
-      paymentDetails,
-    );
-  }
+//   @Post()
+//   async createWithdrawal(
+//     @LoggedInUserDecorator() user: UserDocument,
+//     @Body() payload: CreateWithdrawalDto,
+//     paymentDetails: any,
+//   ) {
+//     return this.userWithdrawalService.createWithdrawalRequest(
+//       user,
+//       payload,
+//       paymentDetails,
+//     );
+//   }
 
-  //   @Get()
-  //   async getWithdrawalById(@Query() { _id }: IDQueryDto) {
-  //     return this.userWithdrawalService.getWithdrawalById(_id);
-  //   }
+//   //   @Get()
+//   //   async getWithdrawalById(@Query() { _id }: IDQueryDto) {
+//   //     return this.userWithdrawalService.getWithdrawalById(_id);
+//   //   }
 }

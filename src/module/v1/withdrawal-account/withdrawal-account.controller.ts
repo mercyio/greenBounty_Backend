@@ -25,32 +25,32 @@ export class WithdrawalAccountController {
     private readonly withdrawalAccountService: WithdrawalAccountService,
   ) {}
 
-  @Post()
-  async create(
-    @LoggedInUserDecorator() user: UserDocument,
-    @Body() payload: CreateWithdrawalAccountDto,
-  ) {
-    return await this.withdrawalAccountService.create(user, payload);
-  }
+  //   @Post()
+  //   async create(
+  //     @LoggedInUserDecorator() user: UserDocument,
+  //     @Body() payload: CreateWithdrawalAccountDto,
+  //   ) {
+  //     return await this.withdrawalAccountService.create(user, payload);
+  //   }
 
-  @Patch()
-  async update(
-    @LoggedInUserDecorator() user: UserDocument,
-    @Body() payload: UpdateWithdrawalAccountDto,
-  ) {
-    return await this.withdrawalAccountService.update(user, payload);
-  }
+  //   @Patch()
+  //   async update(
+  //     @LoggedInUserDecorator() user: UserDocument,
+  //     @Body() payload: UpdateWithdrawalAccountDto,
+  //   ) {
+  //     return await this.withdrawalAccountService.update(user, payload);
+  //   }
 
-  @Get()
-  async retrieve(
-    @LoggedInUserDecorator() user: UserDocument,
-    @Query() query: PaginationDto,
-  ) {
-    return await this.withdrawalAccountService.retrieve(user, query);
-  }
+  //   @Get()
+  //   async retrieve(
+  //     @LoggedInUserDecorator() user: UserDocument,
+  //     @Query() query: PaginationDto,
+  //   ) {
+  //     return await this.withdrawalAccountService.retrieve(user, query);
+  //   }
 
-  @Delete()
-  async delete(@Query() { _id }: IDQueryDto) {
-    return await this.withdrawalAccountService.softDelete(_id);
-  }
+  //   @Delete()
+  //   async delete(@Query() { _id }: IDQueryDto) {
+  //     return await this.withdrawalAccountService.softDelete(_id);
+  //   }
 }
