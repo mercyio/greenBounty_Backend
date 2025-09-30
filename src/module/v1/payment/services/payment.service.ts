@@ -1,209 +1,209 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Payment, PaymentDocument } from '../schema/payment.schema';
-import { Model } from 'mongoose';
-import {
-  CreatePaymentDto,
-  GetPaymentDto,
-  UpdatePaymentDto,
-} from '../dto/payment.dto';
-import { PaystackService } from './paystack.service';
-import { FlutterwaveService } from './flutterwave.service';
-import { PaginationDto } from '../../repository/dto/repository.dto';
-import { RepositoryService } from '../../repository/repository.service';
-import { PaymentProvidersEnum } from 'src/common/enums/payment.enum';
-import {
-  IBaseInitializePayment,
-  IFlutterwaveInitializePayment,
-} from 'src/common/interfaces/payment.interface';
-import { BaseRepositoryService } from '../../repository/base.service';
-import { BasketService } from '../../basket/basket.service';
+// import {
+//   BadRequestException,
+//   Injectable,
+//   NotFoundException,
+// } from '@nestjs/common';
+// import { InjectModel } from '@nestjs/mongoose';
+// import { Payment, PaymentDocument } from '../schema/payment.schema';
+// import { Model } from 'mongoose';
+// import {
+//   CreatePaymentDto,
+//   GetPaymentDto,
+//   UpdatePaymentDto,
+// } from '../dto/payment.dto';
+// import { PaystackService } from './paystack.service';
+// import { FlutterwaveService } from './flutterwave.service';
+// import { PaginationDto } from '../../repository/dto/repository.dto';
+// import { RepositoryService } from '../../repository/repository.service';
+// import { PaymentProvidersEnum } from 'src/common/enums/payment.enum';
+// import {
+//   IBaseInitializePayment,
+//   IFlutterwaveInitializePayment,
+// } from 'src/common/interfaces/payment.interface';
+// import { BaseRepositoryService } from '../../repository/base.service';
+// import { BasketService } from '../../basket/basket.service';
 
-@Injectable()
-export class PaymentService extends BaseRepositoryService<PaymentDocument> {
-  constructor(
-    @InjectModel(Payment.name) private paymentModel: Model<PaymentDocument>,
-    private paystackService: PaystackService,
-    private flutterwaveService: FlutterwaveService,
-    private repositoryService: RepositoryService,
-    private premiumService: BasketService,
-  ) {
-    super(paymentModel);
-  }
+// @Injectable()
+// export class PaymentService extends BaseRepositoryService<PaymentDocument> {
+//   constructor(
+//     @InjectModel(Payment.name) private paymentModel: Model<PaymentDocument>,
+//     private paystackService: PaystackService,
+//     private flutterwaveService: FlutterwaveService,
+//     private repositoryService: RepositoryService,
+//     private premiumService: BasketService,
+//   ) {
+//     super(paymentModel);
+//   }
 
-  async create(payload: CreatePaymentDto) {
-    const { name } = payload;
+//   async create(payload: CreatePaymentDto) {
+//     const { name } = payload;
 
-    const paymentWithNameExist = await this.paymentModel.countDocuments({
-      name,
-    });
+//     const paymentWithNameExist = await this.paymentModel.countDocuments({
+//       name,
+//     });
 
-    if (paymentWithNameExist) {
-      throw new BadRequestException(
-        `Payment with name "${name}" already exists`,
-      );
-    }
+//     if (paymentWithNameExist) {
+//       throw new BadRequestException(
+//         `Payment with name "${name}" already exists`,
+//       );
+//     }
 
-    const uploadedImageUrl = null;
-    // if (file) {
-    //   const { mimetype, buffer } = file;
+//     const uploadedImageUrl = null;
+//     // if (file) {
+//     //   const { mimetype, buffer } = file;
 
-    //   const awsFile: IAwsUploadFile = {
-    //     fileName: BaseHelper.generateFileName('payment', mimetype),
-    //     mimetype,
-    //     buffer,
-    //   };
+//     //   const awsFile: IAwsUploadFile = {
+//     //     fileName: BaseHelper.generateFileName('payment', mimetype),
+//     //     mimetype,
+//     //     buffer,
+//     //   };
 
-    //   const { secureUrl } = await uploadSingleFile(awsFile);
-    //   uploadedImageUrl = secureUrl;
-    // }
+//     //   const { secureUrl } = await uploadSingleFile(awsFile);
+//     //   uploadedImageUrl = secureUrl;
+//     // }
 
-    return await this.paymentModel.create({
-      ...payload,
-      ...(uploadedImageUrl && { imageUrl: uploadedImageUrl }),
-    });
-  }
+//     return await this.paymentModel.create({
+//       ...payload,
+//       ...(uploadedImageUrl && { imageUrl: uploadedImageUrl }),
+//     });
+//   }
 
-  async update(
-    id: string,
-    payload: UpdatePaymentDto,
-    file?: Express.Multer.File,
-  ) {
-    console.log('payload', payload);
+//   async update(
+//     id: string,
+//     payload: UpdatePaymentDto,
+//     file?: Express.Multer.File,
+//   ) {
+//     console.log('payload', payload);
 
-    const uploadedImageUrl = null;
+//     const uploadedImageUrl = null;
 
-    if (file) {
-      // const { mimetype, buffer } = file;
-      // const awsFile: IAwsUploadFile = {
-      //   fileName: BaseHelper.generateFileName('payment', mimetype),
-      //   mimetype,
-      //   buffer,
-      // };
-      // const { secureUrl } = await uploadSingleFile(awsFile);
-      // uploadedImageUrl = secureUrl;
-    }
+//     if (file) {
+//       // const { mimetype, buffer } = file;
+//       // const awsFile: IAwsUploadFile = {
+//       //   fileName: BaseHelper.generateFileName('payment', mimetype),
+//       //   mimetype,
+//       //   buffer,
+//       // };
+//       // const { secureUrl } = await uploadSingleFile(awsFile);
+//       // uploadedImageUrl = secureUrl;
+//     }
 
-    const updatedPayment = await this.paymentModel.findByIdAndUpdate(
-      id,
-      { ...payload, ...(uploadedImageUrl && { imageUrl: uploadedImageUrl }) },
-      {
-        new: true,
-      },
-    );
+//     const updatedPayment = await this.paymentModel.findByIdAndUpdate(
+//       id,
+//       { ...payload, ...(uploadedImageUrl && { imageUrl: uploadedImageUrl }) },
+//       {
+//         new: true,
+//       },
+//     );
 
-    if (!updatedPayment) {
-      throw new NotFoundException('Payment not found');
-    }
+//     if (!updatedPayment) {
+//       throw new NotFoundException('Payment not found');
+//     }
 
-    return updatedPayment;
-  }
+//     return updatedPayment;
+//   }
 
-  async delete(id: string) {
-    return await this.paymentModel.findOneAndUpdate(
-      {
-        _id: id,
-        isDeleted: false,
-      },
-      {
-        isDeleted: true,
-      },
-      {
-        new: true,
-      },
-    );
-  }
+//   async delete(id: string) {
+//     return await this.paymentModel.findOneAndUpdate(
+//       {
+//         _id: id,
+//         isDeleted: false,
+//       },
+//       {
+//         isDeleted: true,
+//       },
+//       {
+//         new: true,
+//       },
+//     );
+//   }
 
-  async getAll(query: GetPaymentDto) {
-    const { currencyId } = query;
+//   async getAll(query: GetPaymentDto) {
+//     const { currencyId } = query;
 
-    return await this.paymentModel.find({
-      ...(currencyId && {
-        supportedCurrencies: currencyId,
-      }),
-    });
-  }
+//     return await this.paymentModel.find({
+//       ...(currencyId && {
+//         supportedCurrencies: currencyId,
+//       }),
+//     });
+//   }
 
-  async getAllPaymentMethods(query: PaginationDto) {
-    return await this.repositoryService.paginate({
-      model: this.paymentModel,
-      query,
-    });
-  }
+//   async getAllPaymentMethods(query: PaginationDto) {
+//     return await this.repositoryService.paginate({
+//       model: this.paymentModel,
+//       query,
+//     });
+//   }
 
-  async checkPaymentMethodAvailability(paymentId: string) {
-    const payment = await this.paymentModel.findOne({
-      _id: paymentId,
-      active: true,
-      isDeleted: false,
-    });
+//   async checkPaymentMethodAvailability(paymentId: string) {
+//     const payment = await this.paymentModel.findOne({
+//       _id: paymentId,
+//       active: true,
+//       isDeleted: false,
+//     });
 
-    if (!payment) {
-      throw new NotFoundException('Payment method not available');
-    }
+//     if (!payment) {
+//       throw new NotFoundException('Payment method not available');
+//     }
 
-    return payment;
-  }
+//     return payment;
+//   }
 
-  async getPaymentMethodByName(name: string) {
-    return this.paymentModel
-      .findOne({
-        name,
-        active: true,
-      })
-      .populate('apiKey');
-  }
+//   async getPaymentMethodByName(name: string) {
+//     return this.paymentModel
+//       .findOne({
+//         name,
+//         active: true,
+//       })
+//       .populate('apiKey');
+//   }
 
-  async initializePaymentByActiveProvider(
-    payload: IBaseInitializePayment | IFlutterwaveInitializePayment,
-  ) {
-    const activePaymentProvider = (await this.paymentModel.findOne({
-      active: true,
-    })) as PaymentDocument[];
+//   async initializePaymentByActiveProvider(
+//     payload: IBaseInitializePayment | IFlutterwaveInitializePayment,
+//   ) {
+//     const activePaymentProvider = (await this.paymentModel.findOne({
+//       active: true,
+//     })) as PaymentDocument[];
 
-    if (!activePaymentProvider) {
-      throw new NotFoundException('No active payment provider found');
-    }
+//     if (!activePaymentProvider) {
+//       throw new NotFoundException('No active payment provider found');
+//     }
 
-    return this.initializePaymentByPaymentProvider(
-      activePaymentProvider[0].name as PaymentProvidersEnum,
-      payload,
-    );
-  }
+//     return this.initializePaymentByPaymentProvider(
+//       activePaymentProvider[0].name as PaymentProvidersEnum,
+//       payload,
+//     );
+//   }
 
-  async initializePaymentByPaymentProvider(
-    name: PaymentProvidersEnum,
-    payload: IBaseInitializePayment | IFlutterwaveInitializePayment,
-  ) {
-    switch (name) {
-      case PaymentProvidersEnum.PAYSTACK:
-        return this.paystackService.initializePayment(
-          payload as IBaseInitializePayment,
-        );
-      case PaymentProvidersEnum.FLUTTERWAVE:
-        return this.flutterwaveService.initializePayment(
-          payload as IFlutterwaveInitializePayment,
-        );
-      default:
-        throw new BadRequestException('Invalid payment provider');
-    }
-  }
+//   async initializePaymentByPaymentProvider(
+//     name: PaymentProvidersEnum,
+//     payload: IBaseInitializePayment | IFlutterwaveInitializePayment,
+//   ) {
+//     switch (name) {
+//       case PaymentProvidersEnum.PAYSTACK:
+//         return this.paystackService.initializePayment(
+//           payload as IBaseInitializePayment,
+//         );
+//       case PaymentProvidersEnum.FLUTTERWAVE:
+//         return this.flutterwaveService.initializePayment(
+//           payload as IFlutterwaveInitializePayment,
+//         );
+//       default:
+//         throw new BadRequestException('Invalid payment provider');
+//     }
+//   }
 
-  async processPremiumBasketPayment(payload: {
-    reference: string;
-    basketId: string;
-    paymentObject: object;
-    amountPaid: number;
-    userIdFromMetadata?: string;
-  }) {
-    return await this.premiumService.upgradeToPremium(
-      payload.basketId,
-      payload.amountPaid,
-      payload.paymentObject,
-    );
-  }
-}
+//   async processPremiumBasketPayment(payload: {
+//     reference: string;
+//     basketId: string;
+//     paymentObject: object;
+//     amountPaid: number;
+//     userIdFromMetadata?: string;
+//   }) {
+//     return await this.premiumService.upgradeToPremium(
+//       payload.basketId,
+//       payload.amountPaid,
+//       payload.paymentObject,
+//     );
+//   }
+// }
