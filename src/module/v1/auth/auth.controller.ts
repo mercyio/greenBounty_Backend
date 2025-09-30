@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Patch, Post, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto, GoogleAuthDto } from '../user/dto/user.dto';
 import { ResponseMessage } from '../../../common/decorators/response.decorator';
@@ -11,6 +11,8 @@ import {
 } from './dto/auth.dto';
 import { Public } from '../../../common/decorators/public.decorator';
 import { RESPONSE_CONSTANT } from '../../../common/constants/response.constant';
+import { LoggedInUserDecorator } from 'src/common/decorators/logged_in_user.decorator';
+import { UserDocument } from '../user/schemas/user.schema';
 
 @Controller('auth')
 export class AuthController {

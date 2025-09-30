@@ -9,6 +9,7 @@ import { ClientSession, Model } from 'mongoose';
 import {
   CreateUserDto,
   GoogleAuthDto,
+  SwitchDashboardDto,
   UpdateUserDto,
   UpgradeBasketDto,
 } from '../dto/user.dto';
@@ -39,7 +40,7 @@ export class UserService {
   ): Promise<UserDocument> {
     try {
       const { name, referralCode, password } = payload;
-      delete payload.referralCode; // delete the referral code to prevent persisting this as the new user referral code
+      delete payload.referralCode;
 
       let referralUserId: string | undefined;
       if (referralCode) {
@@ -61,7 +62,7 @@ export class UserService {
       const result = await this.userModel.create({
         ...payload,
         password: hashedPassword,
-        ...(role ? { role } : { role: UserRoleEnum.USER }),
+        activeRole: role,
         referredBy: referralUserId,
         referralCode: userReferralCode,
       });
@@ -122,6 +123,14 @@ export class UserService {
 
   async updateUserById(userId: string, details: any) {
     await this.userModel.updateOne({ _id: userId }, details).exec();
+  }
+
+  async updateQuery(userId: string, details: any) {
+    return this.userModel.findByIdAndUpdate(
+      userId,
+      { $set: details },
+      { new: true }, // return updated doc
+    );
   }
 
   async checkUserExistByEmail(email: string): Promise<boolean> {
@@ -238,5 +247,15 @@ export class UserService {
     return this.userModel.findOneAndUpdate({ _id: userId }, updateData, {
       new: true,
     });
+  }
+
+  async switchDashboard(user: UserDocument, payload: SwitchDashboardDto) {
+    const result = await this.updateQuery(
+      BaseHelper.getMongoDbResourceId(user),
+      {
+        activeRole: payload.role,
+      },
+    );
+    return { ...result['_doc'] };
   }
 }

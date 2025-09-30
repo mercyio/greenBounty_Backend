@@ -1,12 +1,24 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Get, Patch, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { UserService } from '../services/user.service';
-import { ILoggedInUser, LoggedInUserDecorator } from 'src/common/decorators/logged_in_user.decorator';
+import {
+  ILoggedInUser,
+  LoggedInUserDecorator,
+} from 'src/common/decorators/logged_in_user.decorator';
 import { ResponseMessage } from 'src/common/decorators/response.decorator';
 import { JwtAuthGuard } from '../../auth/guards/jwt.guard';
 import { RESPONSE_CONSTANT } from 'src/common/constants/response.constant';
-import { UpdateUserDto, UpgradeBasketDto } from '../dto/user.dto';
+import { SwitchDashboardDto, UpdateUserDto, UpgradeBasketDto } from '../dto/user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { UserDocument } from '../schemas/user.schema';
 
 @Controller('user')
 export class UserController {
@@ -37,5 +49,13 @@ export class UserController {
     @UploadedFile() photo?: Express.Multer.File,
   ) {
     return await this.userService.updateUser(user._id, payload, photo);
+  }
+
+  @Patch('dashboard')
+  async switchDashboard(
+    @LoggedInUserDecorator() user: UserDocument,
+    @Body() paylaod: SwitchDashboardDto,
+  ) {
+    return this.userService.switchDashboard(user, paylaod);
   }
 }

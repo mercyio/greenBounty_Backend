@@ -3,6 +3,8 @@ import {
   IsBooleanString,
   IsEmail,
   IsEnum,
+  IsNotEmpty,
+  isNotEmpty,
   IsOptional,
   IsString,
   MaxLength,
@@ -11,6 +13,7 @@ import {
 import { Transform } from 'class-transformer';
 import { PaginationDto } from '../../repository/dto/repository.dto';
 import { BasketTypeEnum } from 'src/common/enums/basket.enum';
+import { UserRoleEnum } from 'src/common/enums/user.enum';
 
 export class CreateUserDto {
   @IsString()
@@ -27,6 +30,10 @@ export class CreateUserDto {
   @IsString()
   @IsOptional()
   referralCode?: string;
+
+  // @IsEnum([UserRoleEnum.HUNTER, UserRoleEnum.RECYCLER])
+  // @IsNotEmpty()
+  // activeRole?: UserRoleEnum;
 }
 
 export class GoogleAuthDto {
@@ -70,4 +77,9 @@ export class UpdateUserDto {
   @IsBoolean()
   @Transform(({ value }) => (value === 'true' ? true : false))
   deleteProfilePhoto?: boolean;
+}
+
+export class SwitchDashboardDto {
+  @IsEnum(UserRoleEnum)
+  role: UserRoleEnum;
 }

@@ -5,9 +5,14 @@ import { BadRequestException } from '@nestjs/common';
 // import { nanoid } from 'nanoid';
 import { CacheHelper } from './redis.util';
 import { ITEM_WEIGHTS } from '../enums/recycle.enum';
+import { Types, Document as MongooseDocument } from 'mongoose';
 
 const encryptionKeyFromEnv = ENVIRONMENT.APP.ENCRYPTION_KEY;
 
+interface MongooseResourceDocument {
+  _id: Types.ObjectId;
+  toObject?: () => any;
+}
 export class BaseHelper {
   static generateRandomString(length = 8) {
     return randomBytes(length).toString('hex');
@@ -116,6 +121,56 @@ export class BaseHelper {
     } else {
       // If item doesn't exist, return 0 or throw an error
       throw new Error(`Item "${item}" is not defined in ITEM_WEIGHTS`);
+    }
+  }
+
+  static getMongoDbResourceId<T = string>(
+    resource:
+      | MongooseDocument
+      | MongooseResourceDocument
+      | Types.ObjectId
+      | string
+      | null,
+  ): string | null | T {
+    if (!resource) return null;
+
+    try {
+      // Handle Mongoose Document with _id
+      if (
+        (resource instanceof MongooseDocument ||
+          (typeof resource === 'object' &&
+            resource !== null &&
+            'toObject' in resource)) &&
+        '_id' in resource
+      ) {
+        return resource._id.toString();
+      }
+
+      // Handle ObjectId
+      if (resource instanceof Types.ObjectId) {
+        return resource.toString();
+      }
+
+      // Handle string - validate if it's a valid ObjectId
+      if (typeof resource === 'string') {
+        return Types.ObjectId.isValid(resource) ? resource : null;
+      }
+
+      // Handle plain object with _id
+      if (typeof resource === 'object' && '_id' in resource) {
+        const id = resource._id;
+        if (id instanceof Types.ObjectId) {
+          return id.toString();
+        }
+        if (typeof id === 'string' && Types.ObjectId.isValid(id)) {
+          return id;
+        }
+      }
+
+      return null;
+    } catch (error) {
+      console.error('Error getting MongoDB resource ID:', error);
+      return null;
     }
   }
 

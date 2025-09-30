@@ -23,6 +23,7 @@ import { UserRoleEnum } from 'src/common/enums/user.enum';
 import { ENVIRONMENT } from 'src/common/configs/environment';
 import { MailService } from '../mail/mail.service';
 import { welcomeEmailTemplate } from '../mail/templates/welcome.email';
+import { UserDocument } from '../user/schemas/user.schema';
 
 @Injectable()
 export class AuthService {
@@ -68,6 +69,7 @@ export class AuthService {
 
       await this.userService.updateUserByEmail(email, {
         isLoggedOut: false,
+        activeRole: UserRoleEnum.ADMIN,
       });
 
       const token = this.jwtService.sign({ _id: adminUser._id });

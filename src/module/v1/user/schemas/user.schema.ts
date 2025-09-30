@@ -20,7 +20,10 @@ export class User {
   password: string;
 
   @Prop({ enum: UserRoleEnum, default: UserRoleEnum.USER })
-  role: UserRoleEnum;
+  role: UserRoleEnum.USER;
+
+  @Prop({ enum: UserRoleEnum })
+  activeRole: UserRoleEnum;
 
   @Prop({ enum: BasketTypeEnum })
   basket: BasketTypeEnum;
